@@ -354,7 +354,7 @@ echo "✅ Deploy complete"
 - [ ] `.env` backend: set `APP_DEBUG=false`
 - [ ] Nginx: tambahkan rate limiting di `/api/login` (5 request/menit per IP)
 - [ ] Cloudflare: enable WAF + Bot Fight Mode
-- [ ] Backup database SQLite: `cp database/database.sqlite ~/backups/dkm-$(date +%Y%m%d).sqlite`
+- [ ] Backup database otomatis: `./scripts/backup-db.sh` (tambahkan ke cron harian)
 - [ ] File ini sudah di `.gitignore` — **JANGAN** commit ke public repo
 
 ---
