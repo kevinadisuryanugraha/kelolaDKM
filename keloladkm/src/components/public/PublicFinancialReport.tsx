@@ -75,9 +75,9 @@ export const PublicFinancialReport: React.FC = () => {
     <div className="space-y-12 pb-16">
       {/* Header Banner */}
       <PageHeader
-        badge="Transparansi Kas 100%"
-        title="Laporan Keuangan Kas Masjid Publik"
-        subtitle="Dipublikasikan secara akuntabel setiap pekan untuk menjamin amanah infaq, sedekah, dan donasi jamaah Masjid Jami Nurul Iman."
+        badgeKey="pages.financial.badge"
+        titleKey="pages.financial.title"
+        subtitleKey="pages.financial.subtitle"
         action={
           <motion.button
             whileHover={{ scale: 1.03 }}

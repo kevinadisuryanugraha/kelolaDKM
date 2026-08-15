@@ -48,8 +48,8 @@ export const DonationPublicPage: React.FC = () => {
     <div className="space-y-12 pb-16">
       {/* Header Banner */}
       <PageHeader
-        title="Donasi Resmi Masjid Jami Nurul Iman"
-        subtitle="Salurkan infaq, sedekah, dan wakaf Anda untuk pembangunan sarana ibadah dan pemberdayaan ummat. Seluruh donasi dicatat secara akuntabel dan transparan."
+        titleKey="pages.donation.title"
+        subtitleKey="pages.donation.subtitle"
       />
 
       {/* Campaigns Grid */}

@@ -112,8 +112,8 @@ export const SuratDokumenModule: React.FC = () => {
       {/* Tabs */}
       <FilterTabs
         tabs={[
-          { id: 'surat', label: 'Surat Masuk & Keluar' },
-          { id: 'arsip', label: 'Arsip Dokumen Legalitas & SK' }
+          { id: 'surat', labelKey: 'dashboard.tabs.surat' },
+          { id: 'arsip', labelKey: 'dashboard.tabs.arsip' }
         ]}
         activeTab={activeTab}
         onChange={(id) => setActiveTab(id as any)}

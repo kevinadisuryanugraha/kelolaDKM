@@ -10,9 +10,9 @@ export const AboutSection: React.FC = () => {
     <div className="space-y-12 pb-16">
       {/* Page Header */}
       <PageHeader
-        badge="Profil Resmi Masjid"
-        title="Tentang Masjid Jami Nurul Iman"
-        subtitle="Sejarah pengabdian dan perjuangan syiar Islam di Pejaten Timur, Jakarta Selatan sejak berdiri hingga menjadi pusat kegiatan keagamaan & pemberdayaan ummat yang transparan."
+        badgeKey="pages.about.badge"
+        titleKey="pages.about.title"
+        subtitleKey="pages.about.subtitle"
       />
 
       {/* Sambutan Ketua DKM Card */}

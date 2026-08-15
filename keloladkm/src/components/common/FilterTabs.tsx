@@ -1,7 +1,8 @@
 import React from 'react';
+import { useI18n } from '../../i18n/I18nContext';
 
 interface FilterTabsProps {
-  tabs: { id: string; label: string }[];
+  tabs: { id: string; label?: string; labelKey?: string }[];
   activeTab: string;
   onChange: (tabId: string) => void;
   className?: string;
@@ -13,6 +14,7 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
   onChange,
   className = ''
 }) => {
+  const { t } = useI18n();
   return (
     <div className={`flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto ${className}`}>
       {tabs.map((tab) => (
@@ -25,7 +27,7 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
               : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'
           }`}
         >
-          {tab.label}
+          {tab.labelKey ? t(tab.labelKey) : tab.label}
         </button>
       ))}
     </div>

@@ -140,9 +140,9 @@ export const DonasiZakatWakafQurbanModule: React.FC = () => {
       {/* Tabs */}
       <FilterTabs
         tabs={[
-          { id: 'campaigns', label: 'Program Campaign Donasi' },
-          { id: 'donors', label: 'Riwayat Donatur' },
-          { id: 'qurban', label: 'Manajemen Qurban & Kupon QR' }
+          { id: 'campaigns', labelKey: 'dashboard.tabs.campaigns' },
+          { id: 'donors', labelKey: 'dashboard.tabs.donors' },
+          { id: 'qurban', labelKey: 'dashboard.tabs.qurban' }
         ]}
         activeTab={activeTab}
         onChange={(id) => setActiveTab(id as any)}

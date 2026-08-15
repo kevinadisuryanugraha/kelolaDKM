@@ -62,9 +62,9 @@ export const ZakatCalculatorPage: React.FC = () => {
     <div className="space-y-12 pb-16">
       {/* Header Banner */}
       <PageHeader
-        badge="Hitung & Bayar ZIS Online"
-        title="Kalkulator Zakat Fitrah, Mal & Fidyah"
-        subtitle="Hitung kewajiban Zakat dan Fidyah secara presisi sesuai nisab syariat Islam, lalu salurkan langsung ke amil resmi Masjid Jami Nurul Iman."
+        badgeKey="pages.zakat.badge"
+        titleKey="pages.zakat.title"
+        subtitleKey="pages.zakat.subtitle"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

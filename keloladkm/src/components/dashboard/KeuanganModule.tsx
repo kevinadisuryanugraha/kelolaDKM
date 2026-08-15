@@ -8,11 +8,11 @@ import { FinancialTransaction, FinancialAccount } from '../../types';
 import { GlassCard } from '../common/GlassCard';
 
 const KEUANGAN_TABS = [
-  { id: 'kas', label: 'Kas Masuk / Keluar' },
-  { id: 'coa', label: 'Chart of Accounts (COA)' },
-  { id: 'jurnal', label: 'Jurnal Umum & Buku Besar' },
-  { id: 'anggaran', label: 'Anggaran vs Realisasi (RAB)' },
-  { id: 'rekonsiliasi', label: 'Rekonsiliasi Bank' }
+  { id: 'kas', labelKey: 'dashboard.tabs.kas' },
+  { id: 'coa', labelKey: 'dashboard.tabs.coa' },
+  { id: 'jurnal', labelKey: 'dashboard.tabs.jurnal' },
+  { id: 'anggaran', labelKey: 'dashboard.tabs.anggaran' },
+  { id: 'rekonsiliasi', labelKey: 'dashboard.tabs.rekonsiliasi' }
 ];
 
 interface JournalRow {

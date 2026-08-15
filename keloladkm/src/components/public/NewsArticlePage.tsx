@@ -20,9 +20,9 @@ export const NewsArticlePage: React.FC = () => {
     <div className="space-y-12 pb-16">
       {/* Header Banner */}
       <PageHeader
-        badge="Wawasan & Informasi"
-        title="Berita, Pengumuman & Artikel Islami"
-        subtitle="Kumpulan berita kegiatan masjid, pengumuman DKM, serta artikel keislaman untuk menambah wawasan keagamaan jamaah Nurul Iman."
+        badgeKey="pages.news.badge"
+        titleKey="pages.news.title"
+        subtitleKey="pages.news.subtitle"
       />
 
       {/* Categories Bar */}

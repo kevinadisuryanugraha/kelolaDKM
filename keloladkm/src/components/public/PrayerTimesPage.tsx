@@ -48,8 +48,8 @@ export const PrayerTimesPage: React.FC = () => {
     <div className="space-y-8 pb-16">
       {/* Page Header */}
       <PageHeader
-        title="Waktu Sholat Pejaten Timur & Sekitarnya"
-        subtitle="Jadwal waktu adhan dan iqamah resmi Masjid Jami Nurul Iman berdasarkan perhitungan Badan Hisab & Rukyat Kemenag RI untuk wilayah Jakarta Selatan."
+        titleKey="pages.prayer.title"
+        subtitleKey="pages.prayer.subtitle"
       />
 
       {/* Main Grid: Schedule & Qibla Widget */}

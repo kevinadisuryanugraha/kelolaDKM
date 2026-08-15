@@ -16,9 +16,9 @@ export const OrganizationStructure: React.FC = () => {
     <div className="space-y-12 pb-16">
       {/* Header Banner */}
       <PageHeader
-        badge="Struktur Kepengurusan"
-        title="Pengurus DKM Masjid Jami Nurul Iman"
-        subtitle="Susunan Pengurus Dewan Kemakmuran Masjid (DKM) Periode 2024 - 2027 yang berkhidmat dan mengabdi demi kemakmuran masjid serta pelayanan jamaah Pejaten Timur."
+        badgeKey="pages.organization.badge"
+        titleKey="pages.organization.title"
+        subtitleKey="pages.organization.subtitle"
       />
 
       {/* Organizational Hierarchy Chart */}

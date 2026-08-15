@@ -10,9 +10,9 @@ export const ImamMuadzinKhatib: React.FC = () => {
     <div className="space-y-12 pb-16">
       {/* Header Banner */}
       <PageHeader
-        badge="Tokoh & Petugas Ibadah"
-        title="Profil Imam, Muadzin & Khatib"
-        subtitle="Para ustadz, muadzin, dan huffazh Al-Qur'an yang memimpin pelaksanaan ibadah ritual, adhan, dan khutbah Jumat di Masjid Jami Nurul Iman Pejaten Timur."
+        badgeKey="pages.imam.badge"
+        titleKey="pages.imam.title"
+        subtitleKey="pages.imam.subtitle"
       />
 
       {/* Roster Cards Grid */}

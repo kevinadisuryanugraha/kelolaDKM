@@ -27,9 +27,9 @@ export const DownloadsFAQContactPage: React.FC = () => {
     <div className="space-y-12 pb-16">
       {/* Header Banner */}
       <PageHeader
-        badge="Pusat Bantuan & Dokumen Resmi"
-        title="Download Dokumen, FAQ & Hubungi DKM"
-        subtitle="Unduh dokumen legalitas dan proposal resmi, dapatkan jawaban seputar layanan keagamaan, serta sampaikan pesan/masukan langsung ke Sekretariat DKM."
+        badgeKey="pages.downloads.badge"
+        titleKey="pages.downloads.title"
+        subtitleKey="pages.downloads.subtitle"
       />
 
       {/* Section 1: Downloads Area */}

@@ -24,9 +24,9 @@ export const KajianSchedulePage: React.FC = () => {
     <div className="space-y-12 pb-16">
       {/* Header Banner */}
       <PageHeader
-        badge="Majelis Ilmu & Tabligh Akbar"
-        title="Jadwal Kajian Islami Nurul Iman"
-        subtitle="Menimba ilmu syar'i bersama para penceramah, ulama, dan akademisi Muslim berpengalaman melalui kajian rutin dan spesial di Masjid Jami Nurul Iman."
+        badgeKey="pages.kajian.badge"
+        titleKey="pages.kajian.title"
+        subtitleKey="pages.kajian.subtitle"
       />
 
       {/* Filter & Search Bar */}

@@ -147,8 +147,8 @@ export const InventarisSarprasModule: React.FC = () => {
       {/* Tabs */}
       <FilterTabs
         tabs={[
-          { id: 'inventory', label: 'Daftar Aset & QR Code' },
-          { id: 'booking', label: 'Jadwal Booking Ruangan / Sarpras' }
+          { id: 'inventory', labelKey: 'dashboard.tabs.inventory' },
+          { id: 'booking', labelKey: 'dashboard.tabs.booking' }
         ]}
         activeTab={activeTab}
         onChange={(id) => setActiveTab(id as any)}

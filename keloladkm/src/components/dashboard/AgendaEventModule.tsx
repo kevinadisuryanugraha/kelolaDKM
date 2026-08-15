@@ -70,9 +70,9 @@ export const AgendaEventModule: React.FC = () => {
       {/* Tabs */}
       <FilterTabs
         tabs={[
-          { id: 'events', label: 'Daftar Agenda & Kajian' },
-          { id: 'checkin', label: 'Scanner Presensi QR Check-In' },
-          { id: 'certificate', label: 'E-Sertifikat Generator' }
+          { id: 'events', labelKey: 'dashboard.tabs.events' },
+          { id: 'checkin', labelKey: 'dashboard.tabs.checkin' },
+          { id: 'certificate', labelKey: 'dashboard.tabs.certificate' }
         ]}
         activeTab={activeTab}
         onChange={(id) => setActiveTab(id as any)}

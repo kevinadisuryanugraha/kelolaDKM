@@ -1,24 +1,36 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { cn } from '../../lib/utils';
+import { useI18n } from '../../i18n/I18nContext';
 
 interface PageHeaderProps {
-  title: string;
+  title?: string;
+  titleKey?: string;
   subtitle?: string;
+  subtitleKey?: string;
   badge?: string;
+  badgeKey?: string;
   action?: React.ReactNode;
   centered?: boolean;
   className?: string;
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({
-  title,
+  title = '',
+  titleKey,
   subtitle,
+  subtitleKey,
   badge,
+  badgeKey,
   action,
   centered = false,
   className,
 }) => {
+  const { t } = useI18n();
+  const resolvedTitle = titleKey ? t(titleKey) : title;
+  const resolvedSubtitle = subtitleKey ? t(subtitleKey) : subtitle;
+  const resolvedBadge = badgeKey ? t(badgeKey) : badge;
+
   return (
     <div
       className={cn(
@@ -33,19 +45,19 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         transition={{ duration: 0.3 }}
         className="space-y-2 max-w-3xl"
       >
-        {badge && (
+        {resolvedBadge && (
           <div className={cn('inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-emerald-700 dark:text-emerald-300 border border-slate-200 dark:border-slate-700', centered && 'mx-auto')}>
-            {badge}
+            {resolvedBadge}
           </div>
         )}
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
-          {title}
+          {resolvedTitle}
         </h1>
 
-        {subtitle && (
+        {resolvedSubtitle && (
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 font-normal leading-relaxed max-w-2xl">
-            {subtitle}
+            {resolvedSubtitle}
           </p>
         )}
       </motion.div>
