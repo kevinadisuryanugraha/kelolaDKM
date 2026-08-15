@@ -1,0 +1,6 @@
+{
+  "name": "KelolaDKM - Masjid Jami Nurul Iman",
+  "description": "Platform digital terpadu Website Public Jamaah dan Dashboard Management System KelolaDKM untuk Masjid Jami Nurul Iman.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
