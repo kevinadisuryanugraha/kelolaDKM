@@ -188,7 +188,7 @@ export const HeaderNavbar: React.FC = () => {
                 className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0"
               >
                 <LayoutDashboard className="w-4 h-4 text-white" />
-                <span>KelolaDKM System</span>
+                <span>{t('nav.dashboard')}</span>
               </button>
             ) : (
               <button
@@ -196,7 +196,7 @@ export const HeaderNavbar: React.FC = () => {
                 className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0"
               >
                 <Building2 className="w-4 h-4 text-emerald-400" />
-                <span>Web Public</span>
+                <span>{t('nav.public')}</span>
               </button>
             )}
           </div>

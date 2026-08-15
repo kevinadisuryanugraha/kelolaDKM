@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ShieldCheck, LogIn, AlertCircle } from 'lucide-react';
 import { login } from '../../api/client';
 import { isDemoModeEnabled } from '../../lib/demoMode';
+import { useI18n } from '../../i18n/I18nContext';
 
 interface Props {
   onLogin: (token: string, user: any) => void;
@@ -13,6 +14,7 @@ export const LoginModal: React.FC<Props> = ({ onLogin, onClose }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { t } = useI18n();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,8 +54,8 @@ export const LoginModal: React.FC<Props> = ({ onLogin, onClose }) => {
           <div className="mx-auto w-14 h-14 bg-amber-400 rounded-2xl flex items-center justify-center shadow-lg">
             <ShieldCheck className="w-8 h-8 text-emerald-950" />
           </div>
-          <h3 className="font-bold text-lg">Masuk KelolaDKM</h3>
-          <p className="text-emerald-200 text-xs">Sistem Manajemen Masjid Jami Nurul Iman</p>
+          <h3 className="font-bold text-lg">{t('login.title')}</h3>
+          <p className="text-emerald-200 text-xs">{t('login.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -65,7 +67,7 @@ export const LoginModal: React.FC<Props> = ({ onLogin, onClose }) => {
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Email</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">{t('login.email')}</label>
             <input
               type="email"
               value={email}
@@ -77,7 +79,7 @@ export const LoginModal: React.FC<Props> = ({ onLogin, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Password</label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">{t('login.password')}</label>
             <input
               type="password"
               value={password}
@@ -98,11 +100,11 @@ export const LoginModal: React.FC<Props> = ({ onLogin, onClose }) => {
             ) : (
               <LogIn className="w-4 h-4" />
             )}
-            <span>{loading ? 'Memproses...' : 'Masuk Dashboard'}</span>
+            <span>{loading ? 'Memproses...' : t('login.submit')}</span>
           </button>
 
           <p className="text-center text-[11px] text-slate-400 font-medium">
-            Akses terbatas untuk Pengurus DKM & Admin
+            {t('login.footer')}
           </p>
         </form>
 
