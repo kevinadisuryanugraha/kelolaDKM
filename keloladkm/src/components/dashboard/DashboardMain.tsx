@@ -43,6 +43,8 @@ export const DashboardMain: React.FC = () => {
     authUser,
     transactions,
     auditLogs,
+    donorRecords,
+    kajianEvents,
     openExportModal,
     isDarkMode,
     toggleDarkMode
@@ -66,6 +68,12 @@ export const DashboardMain: React.FC = () => {
 
   const totalKas = MASJID_INFO.stats.totalKas;
   const pendingApprovals = transactions.filter((t) => t.status === 'Pending').length;
+  const totalDonasi = donorRecords.reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
+  const agendaCount = kajianEvents.length;
+
+  const now = new Date();
+  const gregorianDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now);
+  const hijriDate = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', { day: 'numeric', month: 'long', year: 'numeric' }).format(now);
 
   const chartOverviewData = [
     { day: 'Senin', KasMasuk: 4200000, KasKeluar: 1200000 },
@@ -243,7 +251,7 @@ export const DashboardMain: React.FC = () => {
                 {menuNav.find((m) => m.id === dashboardSubTab)?.label || 'Dashboard Overview'}
               </h1>
               <p className="text-xs text-slate-500 font-medium">
-                Senin, 20 Juli 2026 • 5 Safar 1448H • {MASJID_INFO.name}
+                {gregorianDate} • {hijriDate} • {MASJID_INFO.name}
               </p>
             </div>
           </div>
@@ -287,7 +295,7 @@ export const DashboardMain: React.FC = () => {
                   badge="+18.2%"
                 >
                   <div className="text-lg xl:text-xl font-bold text-slate-900 dark:text-white font-mono whitespace-nowrap tracking-tight">
-                    Rp 45.800.000
+                    Rp {totalDonasi.toLocaleString('id-ID')}
                   </div>
                   <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">Infaq, Zakat & Wakaf</p>
                 </BentoItem>
@@ -296,10 +304,10 @@ export const DashboardMain: React.FC = () => {
                   colSpan="col-span-1"
                   title="Agenda Kajian Bulan Ini"
                   icon={<Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />}
-                  badge="24 Event"
+                  badge={`${agendaCount} Event`}
                 >
                   <div className="text-lg xl:text-xl font-bold text-slate-900 dark:text-white font-mono whitespace-nowrap tracking-tight">
-                    24 Kegiatan
+                    {agendaCount} Kegiatan
                   </div>
                   <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">Kajian rutin & Tabligh</p>
                 </BentoItem>

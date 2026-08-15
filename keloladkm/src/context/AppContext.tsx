@@ -170,18 +170,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setShowLoginModal(false);
     setActiveAppTab('dashboard');
 
-    // Hydrate from API (falls back to localStorage if offline)
-    try {
-      const data = await fetchAllDashboardData();
-      setTransactions(data.transactions);
-      setCampaigns(data.campaigns);
-      setDonorRecords(data.donorRecords);
-      setQurbanParticipants(data.qurbanParticipants);
-      setInventoryItems(data.inventoryItems);
-      setLetters(data.letters);
-      setAuditLogs(data.auditLogs);
-      setKajianEvents(data.kajianEvents);
-    } catch { /* keep localStorage data */ }
+    // Data hydration happens in a dedicated effect below (covers fresh login
+    // and page reload with an existing token).
   };
 
   const logout = () => {
@@ -210,6 +200,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [letters, setLetters] = useState<OfficialLetter[]>(OFFICIAL_LETTERS);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>(AUDIT_LOGS);
   const [kajianEvents, setKajianEvents] = useState<KajianEvent[]>(KAJIAN_EVENTS);
+
+  // Hydrate dashboard data from the API whenever the user is authenticated
+  // (covers both a fresh login and a page reload with an existing token).
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    (async () => {
+      try {
+        const data = await fetchAllDashboardData();
+        setTransactions(data.transactions);
+        setCampaigns(data.campaigns);
+        setDonorRecords(data.donorRecords);
+        setQurbanParticipants(data.qurbanParticipants);
+        setInventoryItems(data.inventoryItems);
+        setLetters(data.letters);
+        setAuditLogs(data.auditLogs);
+        setKajianEvents(data.kajianEvents);
+      } catch {
+        // Keep current (localStorage/mock) data when offline.
+      }
+    })();
+  }, [isAuthenticated]);
   
   const [runningText, setRunningText] = useState<string>(
     '🕌 Selamat Datang di Masjid Jami Nurul Iman Pejaten Timur • Infaq Jumat Pekan Ini: Rp 8.450.000 • Kajian Subuh Sabtu Bersama KH. Ahmad Fauzi • Donasi QRIS Tersedia 24 Jam'
