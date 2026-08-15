@@ -48,6 +48,17 @@ const en: Record<string, any> = {
     submit: 'Enter Dashboard',
     footer: 'Limited access for DKM Board & Admin',
   },
+  loginPage: {
+    heading: 'DKM BackOffice Login',
+    roles: 'SUPER ADMIN • DKM CHAIR • TREASURER',
+    demoTitle: 'Select Demo Board Access (1-Click Simulation)',
+    emailLabel: 'BOARD EMAIL',
+    passwordLabel: 'PASSWORD',
+    submit: 'Sign In Now',
+    forgot: 'Forgot password?',
+    publicQuestion: 'Public visitor?',
+    backHome: 'Back to Home',
+  },
   error: {
     title: 'System Error',
     message: 'An unexpected error occurred. Please reload the page.',

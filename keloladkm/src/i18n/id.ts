@@ -48,6 +48,17 @@ const id = {
     submit: 'Masuk Dashboard',
     footer: 'Akses terbatas untuk Pengurus DKM & Admin',
   },
+  loginPage: {
+    heading: 'Masuk BackOffice DKM',
+    roles: 'SUPER ADMIN • KETUA DKM • BENDAHARA',
+    demoTitle: 'Pilih Akses Demo Pengurus (Simulasi 1-Klik)',
+    emailLabel: 'EMAIL PENGURUS',
+    passwordLabel: 'KATA SANDI',
+    submit: 'Masuk Sekarang',
+    forgot: 'Lupa password?',
+    publicQuestion: 'Jamaah Publik?',
+    backHome: 'Kembali ke Beranda Utama',
+  },
   error: {
     title: 'Terjadi Kesalahan Sistem',
     message: 'Maaf, terjadi kesalahan yang tidak terduga. Silakan muat ulang halaman.',

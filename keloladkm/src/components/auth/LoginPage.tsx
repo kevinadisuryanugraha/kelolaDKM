@@ -17,6 +17,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { useI18n } from '../../i18n/I18nContext';
 import { login as apiLogin } from '../../api/client';
 import { isDemoModeEnabled } from '../../lib/demoMode';
 import { UserRole } from '../../types';
@@ -24,6 +25,7 @@ import { MASJID_INFO } from '../../data/mockData';
 
 export const LoginPage: React.FC = () => {
   const { login, setPublicSubTab, setCurrentRole } = useApp();
+  const { t } = useI18n();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -133,10 +135,10 @@ export const LoginPage: React.FC = () => {
         >
           <div className="space-y-2">
             <h1 className="font-bold text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
-              Masuk BackOffice DKM
+              {t('loginPage.heading')}
             </h1>
             <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-400">
-              SUPER ADMIN • KETUA DKM • BENDAHARA
+              {t('loginPage.roles')}
             </p>
           </div>
 
@@ -144,7 +146,7 @@ export const LoginPage: React.FC = () => {
           {isDemoModeEnabled() && (
             <div className="space-y-2">
               <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Pilih Akses Demo Pengurus (Simulasi 1-Klik)
+                {t('loginPage.demoTitle')}
               </label>
               <div className="grid grid-cols-2 gap-2">
                 {demoAccounts.map((acc) => {
@@ -184,7 +186,7 @@ export const LoginPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-                EMAIL PENGURUS
+                {t('loginPage.emailLabel')}
               </label>
               <input
                 type="email"
@@ -199,14 +201,14 @@ export const LoginPage: React.FC = () => {
             <div>
               <div className="flex justify-between items-center mb-1.5">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-                  KATA SANDI
+                  {t('loginPage.passwordLabel')}
                 </label>
                 <button
                   type="button"
                   onClick={() => alert('Fitur reset kata sandi telah dikirim ke email pengurus terdaftar.')}
                   className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
                 >
-                  Lupa password?
+                  {t('loginPage.forgot')}
                 </button>
               </div>
               <div className="relative">
@@ -240,7 +242,7 @@ export const LoginPage: React.FC = () => {
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  <span>Masuk Sekarang</span>
+                  <span>{t('loginPage.submit')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -249,12 +251,12 @@ export const LoginPage: React.FC = () => {
 
           {/* Bottom Switch Link */}
           <div className="text-center pt-2">
-            <span className="text-xs text-slate-500 font-medium">Jamaah Publik? </span>
+            <span className="text-xs text-slate-500 font-medium">{t('loginPage.publicQuestion')} </span>
             <button
               onClick={() => setPublicSubTab('home')}
               className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
             >
-              Kembali ke Beranda Utama
+              {t('loginPage.backHome')}
             </button>
           </div>
         </motion.div>
