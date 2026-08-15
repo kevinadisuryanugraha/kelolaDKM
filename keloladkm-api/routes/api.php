@@ -12,6 +12,7 @@ use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\KajianEventController;
 use App\Http\Controllers\OfficialLetterController;
 use App\Http\Controllers\QurbanParticipantController;
+use App\Http\Controllers\RoomBookingController;
 use App\Models\AuditLog;
 use App\Models\DonationCampaign;
 use App\Models\DonorRecord;
@@ -47,6 +48,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Inventory
     Route::apiResource('inventory-items', InventoryItemController::class);
+
+    // Room bookings (Sarpras)
+    Route::apiResource('room-bookings', RoomBookingController::class);
 
     // Agenda
     Route::apiResource('kajian-events', KajianEventController::class)->except(['index']);

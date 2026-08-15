@@ -63,6 +63,13 @@ export const getInventoryItems = () =>
 export const createInventoryItem = (data: any) =>
   api.post('/inventory-items', data).then(r => r.data);
 
+// Room bookings
+export const getRoomBookings = () =>
+  api.get('/room-bookings').then(r => r.data);
+
+export const createRoomBooking = (data: any) =>
+  api.post('/room-bookings', data).then(r => r.data);
+
 // Kajian
 export const getKajianEvents = () =>
   api.get('/kajian-events').then(r => r.data);

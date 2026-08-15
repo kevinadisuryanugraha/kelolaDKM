@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { snakeToCamel } from '../lib/utils';
+import { snakeToCamel, camelToSnake } from '../lib/utils';
 
 describe('snakeToCamel', () => {
   it('converts snake_case keys to camelCase', () => {
@@ -35,5 +35,15 @@ describe('snakeToCamel', () => {
     expect(snakeToCamel(42)).toBe(42);
     expect(snakeToCamel('text')).toBe('text');
     expect(snakeToCamel({ alreadyCamel: 1 })).toEqual({ alreadyCamel: 1 });
+  });
+
+  it('camelToSnake converts camelCase keys to snake_case', () => {
+    const out = camelToSnake({ accountCode: '101.1', recordedBy: 'A', refNumber: 'X' });
+    expect(out).toEqual({ account_code: '101.1', recorded_by: 'A', ref_number: 'X' });
+  });
+
+  it('snakeToCamel and camelToSnake are reversible', () => {
+    const original = { account_code: '101.1', ref_number: 'INV/1', is_published: true };
+    expect(camelToSnake(snakeToCamel(original))).toEqual(original);
   });
 });

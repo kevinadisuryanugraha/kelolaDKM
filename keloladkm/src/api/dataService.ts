@@ -3,7 +3,7 @@
  * Tries backend API; on failure falls back to localStorage + mock data.
  */
 import * as api from './client';
-import { snakeToCamel } from '../lib/utils';
+import { snakeToCamel, camelToSnake } from '../lib/utils';
 import {
   FINANCIAL_TRANSACTIONS, COA_ACCOUNTS, BUDGET_PLANS,
   DONATION_CAMPAIGNS, DONOR_RECORDS,
@@ -55,7 +55,7 @@ async function apiFirst<T>(apiCall: () => Promise<any>, storageKey: string, fall
 
 export async function fetchAllDashboardData() {
   const [transactions, accounts, budgets, campaigns, donorRecords, qurbanParticipants,
-    inventoryItems, letters, auditLogs, kajianEvents] = await Promise.all([
+    inventoryItems, roomBookings, letters, auditLogs, kajianEvents] = await Promise.all([
     apiFirst(() => api.getTransactions(), STORAGE_KEYS.transactions, FINANCIAL_TRANSACTIONS),
     apiFirst(() => api.getAccounts(), STORAGE_KEYS.accounts, COA_ACCOUNTS),
     apiFirst(() => api.getBudgets(), STORAGE_KEYS.budgets, BUDGET_PLANS),
@@ -63,42 +63,35 @@ export async function fetchAllDashboardData() {
     apiFirst(() => api.getDonorRecords?.() ?? Promise.resolve(DONOR_RECORDS), STORAGE_KEYS.donorRecords, DONOR_RECORDS),
     apiFirst(() => api.getQurbanParticipants?.() ?? Promise.resolve(QURBAN_PARTICIPANTS), STORAGE_KEYS.qurbanParticipants, QURBAN_PARTICIPANTS),
     apiFirst(() => api.getInventoryItems?.() ?? Promise.resolve(INVENTORY_ITEMS), STORAGE_KEYS.inventoryItems, INVENTORY_ITEMS),
+    apiFirst(() => api.getRoomBookings?.() ?? Promise.resolve(ROOM_BOOKINGS), STORAGE_KEYS.roomBookings, ROOM_BOOKINGS),
     apiFirst(() => api.getLetters?.() ?? Promise.resolve(OFFICIAL_LETTERS), STORAGE_KEYS.letters, OFFICIAL_LETTERS),
     apiFirst(() => api.getAuditLogs?.() ?? Promise.resolve(AUDIT_LOGS), STORAGE_KEYS.auditLogs, AUDIT_LOGS),
     apiFirst(() => api.getKajianEvents?.() ?? Promise.resolve(KAJIAN_EVENTS), STORAGE_KEYS.kajianEvents, KAJIAN_EVENTS),
   ]);
 
-  return { transactions, accounts, budgets, campaigns, donorRecords, qurbanParticipants, inventoryItems, letters, auditLogs, kajianEvents };
+  return { transactions, accounts, budgets, campaigns, donorRecords, qurbanParticipants, inventoryItems, roomBookings, letters, auditLogs, kajianEvents };
 }
 
-// ── Mutations (API-first, localStorage on failure) ──
+// ── Mutations ──
+// Each mutation returns the server-created record (snake_case → camelCase)
+// or null when the backend is offline.
 
-export async function createTransaction(data: any) {
-  try { await api.createTransaction(data); } catch { /* offline */ }
+async function mutate(apiCall: () => Promise<any>) {
+  try {
+    const res = await apiCall();
+    return snakeToCamel(res?.data?.data ?? res?.data ?? res);
+  } catch {
+    return null;
+  }
 }
 
-export async function createCampaign(data: any) {
-  try { await api.createCampaign(data); } catch { /* offline */ }
-}
-
-export async function createDonorRecord(data: any) {
-  try { await api.createDonorRecord(data); } catch { /* offline */ }
-}
-
-export async function createQurbanParticipant(data: any) {
-  try { await api.createQurbanParticipant(data); } catch { /* offline */ }
-}
-
-export async function createInventoryItem(data: any) {
-  try { await api.createInventoryItem(data); } catch { /* offline */ }
-}
-
-export async function createLetter(data: any) {
-  try { await api.createLetter(data); } catch { /* offline */ }
-}
-
-export async function createKajianEvent(data: any) {
-  try { await api.createKajianEvent(data); } catch { /* offline */ }
-}
+export const createTransaction = (data: any) => mutate(() => api.createTransaction(camelToSnake(data)));
+export const createCampaign = (data: any) => mutate(() => api.createCampaign(camelToSnake(data)));
+export const createDonorRecord = (data: any) => mutate(() => api.createDonorRecord(camelToSnake(data)));
+export const createQurbanParticipant = (data: any) => mutate(() => api.createQurbanParticipant(camelToSnake(data)));
+export const createInventoryItem = (data: any) => mutate(() => api.createInventoryItem(camelToSnake(data)));
+export const createRoomBooking = (data: any) => mutate(() => api.createRoomBooking(camelToSnake(data)));
+export const createLetter = (data: any) => mutate(() => api.createLetter(camelToSnake(data)));
+export const createKajianEvent = (data: any) => mutate(() => api.createKajianEvent(camelToSnake(data)));
 
 export { STORAGE_KEYS, load, save };

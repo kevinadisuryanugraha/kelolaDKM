@@ -33,6 +33,7 @@ import {
   createDonorRecord as apiCreateDonorRecord,
   createQurbanParticipant as apiCreateQurban,
   createInventoryItem as apiCreateInventory,
+  createRoomBooking as apiCreateRoomBooking,
   createLetter as apiCreateLetter,
   createKajianEvent as apiCreateKajian,
 } from '../api/dataService';
@@ -224,6 +225,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setDonorRecords(data.donorRecords);
         setQurbanParticipants(data.qurbanParticipants);
         setInventoryItems(data.inventoryItems);
+        setRoomBookings(data.roomBookings);
         setLetters(data.letters);
         setAuditLogs(data.auditLogs);
         setKajianEvents(data.kajianEvents);
@@ -295,7 +297,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
     
     setTransactions((prev) => [newTx, ...prev]);
-    apiCreateTransaction({ ...tx, ref_number: refNumber }).catch(() => {});
+    apiCreateTransaction({ ...tx, ref_number: refNumber }).then((created) => {
+      if (created?.id) setTransactions((prev) => prev.map((t) => (t.id === id ? { ...created, id: String(created.id) } : t)));
+    });
     addAuditLog('ADD_TRANSACTION', 'Keuangan', `Menambahkan transaksi ${tx.type}: Rp ${tx.amount.toLocaleString('id-ID')} (${tx.description})`);
     showToast(`Transaksi ${tx.type} sebesar Rp ${tx.amount.toLocaleString('id-ID')} berhasil dicatat!`, 'success');
   };
@@ -317,7 +321,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       donorCount: 0
     };
     setCampaigns((prev) => [newCmp, ...prev]);
-    apiCreateCampaign({ ...campaign, collected_amount: 0, donor_count: 0 }).catch(() => {});
+    apiCreateCampaign({ ...campaign, collected_amount: 0, donor_count: 0 }).then((created) => {
+      if (created?.id) setCampaigns((prev) => prev.map((c) => (c.id === id ? { ...created, id: String(created.id) } : c)));
+    });
     addAuditLog('CREATE_CAMPAIGN', 'Donasi', `Membuat program campaign donasi baru: ${campaign.title}`);
     showToast(`Campaign ${campaign.title} berhasil dipublikasikan!`, 'success');
   };
@@ -346,7 +352,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       )
     );
     
-    apiCreateDonorRecord({ ...donor, date }).catch(() => {});
+    apiCreateDonorRecord({ ...donor, date }).then((created) => {
+      if (created?.id) setDonorRecords((prev) => prev.map((d) => (d.id === id ? { ...created, id: String(created.id) } : d)));
+    });
     addAuditLog('DONATION_RECEIVED', 'Donasi', `Donasi diterima dari ${donor.donorName} sebesar Rp ${donor.amount.toLocaleString('id-ID')}`);
     showToast(`Alhamdulillah, donasi sebesar Rp ${donor.amount.toLocaleString('id-ID')} berhasil diterima!`, 'success');
   };
@@ -361,7 +369,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       isDistributed: false
     };
     setQurbanParticipants((prev) => [newQrb, ...prev]);
-    apiCreateQurban({ ...participant, coupon_code: couponCode, is_distributed: false }).catch(() => {});
+    apiCreateQurban({ ...participant, coupon_code: couponCode, is_distributed: false }).then((created) => {
+      if (created?.id) setQurbanParticipants((prev) => prev.map((q) => (q.id === id ? { ...created, id: String(created.id) } : q)));
+    });
     addAuditLog('REGISTER_QURBAN', 'Qurban', `Pendaftaran hewan Qurban ${participant.animalType} atas nama ${participant.participantName}`);
     showToast(`Pendaftaran Qurban atas nama ${participant.participantName} berhasil disimpan dengan Kode Kupon: ${couponCode}`, 'success');
   };
@@ -384,7 +394,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       qrCode
     };
     setInventoryItems((prev) => [newItem, ...prev]);
-    apiCreateInventory({ ...item, code, qr_code: qrCode }).catch(() => {});
+    apiCreateInventory({ ...item, code, qr_code: qrCode }).then((created) => {
+      if (created?.id) setInventoryItems((prev) => prev.map((it) => (it.id === id ? { ...created, id: String(created.id) } : it)));
+    });
     addAuditLog('ADD_INVENTORY', 'Inventaris', `Mencatat aset inventaris baru: ${item.name}`);
     showToast(`Barang inventaris ${item.name} berhasil ditambahkan!`, 'success');
   };
@@ -397,6 +409,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       status: 'Disetujui'
     };
     setRoomBookings((prev) => [newBkg, ...prev]);
+    apiCreateRoomBooking({ ...booking }).then((created) => {
+      if (created?.id) setRoomBookings((prev) => prev.map((b) => (b.id === id ? { ...created, id: String(created.id) } : b)));
+    });
     addAuditLog('BOOK_ROOM', 'Sarpras', `Permohonan booking ruangan ${booking.roomName} oleh ${booking.applicantName}`);
     showToast(`Booking ${booking.roomName} berhasil disetujui & dicatat!`, 'success');
   };
@@ -409,7 +424,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       status: 'Diproses'
     };
     setLetters((prev) => [newLtr, ...prev]);
-    apiCreateLetter({ ...letter }).catch(() => {});
+    apiCreateLetter({ ...letter }).then((created) => {
+      if (created?.id) setLetters((prev) => prev.map((l) => (l.id === id ? { ...created, id: String(created.id) } : l)));
+    });
     addAuditLog('CREATE_LETTER', 'Surat', `Membuat surat ${letter.type}: ${letter.subject}`);
     showToast(`Surat ${letter.type} dengan nomor ${letter.letterNumber} berhasil disimpan!`, 'success');
   };
@@ -418,7 +435,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const id = 'KJ-' + String(kajianEvents.length + 1).padStart(3, '0');
     const newEv: KajianEvent = { ...event, id };
     setKajianEvents((prev) => [newEv, ...prev]);
-    apiCreateKajian({ ...event }).catch(() => {});
+    apiCreateKajian({ ...event }).then((created) => {
+      if (created?.id) setKajianEvents((prev) => prev.map((k) => (k.id === id ? { ...created, id: String(created.id) } : k)));
+    });
     addAuditLog('ADD_KAJIAN', 'Agenda', `Menambahkan jadwal kajian baru: ${event.title}`);
     showToast(`Agenda Kajian "${event.title}" berhasil dipublikasikan!`, 'success');
   };

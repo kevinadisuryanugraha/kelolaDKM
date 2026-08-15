@@ -21,3 +21,20 @@ export function snakeToCamel<T = unknown>(value: T): any {
   }
   return value;
 }
+
+/**
+ * Recursively convert camelCase object keys to snake_case.
+ * Used when sending payloads to the Laravel API (which expects snake_case).
+ */
+export function camelToSnake(value: unknown): any {
+  if (Array.isArray(value)) return value.map(camelToSnake);
+  if (value !== null && typeof value === 'object' && !(value instanceof Date)) {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      const key = k.replace(/([A-Z])/g, (m) => `_${m.toLowerCase()}`);
+      out[key] = camelToSnake(v);
+    }
+    return out;
+  }
+  return value;
+}
