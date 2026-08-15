@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { login as apiLogin } from '../../api/client';
+import { isDemoModeEnabled } from '../../lib/demoMode';
 import { UserRole } from '../../types';
 import { MASJID_INFO } from '../../data/mockData';
 
@@ -72,8 +73,8 @@ export const LoginPage: React.FC = () => {
       }
       throw new Error('Fallback to local authentication');
     } catch (err: any) {
-      // Fallback mode for standalone frontend / demo mode
-      if (email.length > 0) {
+      // Offline/demo fallback is only allowed when demo mode is explicitly enabled.
+      if (isDemoModeEnabled() && email.length > 0) {
         const partialUser = err?.response?.data?.data?.user || err?.response?.data?.user || null;
         const matchedDemo = demoAccounts.find((d) => d.email === email);
         const mockUser = {
@@ -85,7 +86,7 @@ export const LoginPage: React.FC = () => {
         setCurrentRole(mockUser.role as UserRole);
         login('mock_token_demo_12345', mockUser);
       } else {
-        setError(err?.response?.data?.message || 'Gagal masuk. Periksa email dan kata sandi Anda.');
+        setError(err?.response?.data?.message || 'Gagal masuk. Periksa email dan kata sandi Anda, atau pastikan backend aktif.');
       }
     } finally {
       setLoading(false);
@@ -139,35 +140,37 @@ export const LoginPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Quick Demo Selector */}
-          <div className="space-y-2">
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Pilih Akses Demo Pengurus (Simulasi 1-Klik)
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              {demoAccounts.map((acc) => {
-                const isSelected = email === acc.email;
-                return (
-                  <button
-                    type="button"
-                    key={acc.role}
-                    onClick={() => handleFillDemo(acc)}
-                    className={`p-2.5 rounded-xl border text-left text-xs transition-all flex flex-col justify-between ${
-                      isSelected
-                        ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-900 dark:text-emerald-300 font-bold ring-2 ring-emerald-500/30'
-                        : 'border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-[11px]">{acc.name}</span>
-                      {isSelected && <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />}
-                    </div>
-                    <span className="text-[10px] text-slate-400 font-normal truncate mt-0.5">{acc.desc}</span>
-                  </button>
-                );
-              })}
+          {/* Quick Demo Selector — only visible in demo mode */}
+          {isDemoModeEnabled() && (
+            <div className="space-y-2">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Pilih Akses Demo Pengurus (Simulasi 1-Klik)
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {demoAccounts.map((acc) => {
+                  const isSelected = email === acc.email;
+                  return (
+                    <button
+                      type="button"
+                      key={acc.role}
+                      onClick={() => handleFillDemo(acc)}
+                      className={`p-2.5 rounded-xl border text-left text-xs transition-all flex flex-col justify-between ${
+                        isSelected
+                          ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-900 dark:text-emerald-300 font-bold ring-2 ring-emerald-500/30'
+                          : 'border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-[11px]">{acc.name}</span>
+                        {isSelected && <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />}
+                      </div>
+                      <span className="text-[10px] text-slate-400 font-normal truncate mt-0.5">{acc.desc}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Error Alert */}
           {error && (

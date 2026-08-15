@@ -65,7 +65,20 @@ const URLSync: React.FC = () => {
 };
 
 const MainAppContent: React.FC = () => {
-  const { activeAppTab, publicSubTab, exportModalData } = useApp();
+  const { activeAppTab, publicSubTab, exportModalData, isAuthenticated, setActiveAppTab, setPublicSubTab } = useApp();
+
+  // Auth guard: the dashboard requires an authenticated session.
+  useEffect(() => {
+    if (activeAppTab === 'dashboard' && !isAuthenticated) {
+      setActiveAppTab('public');
+      setPublicSubTab('login');
+    }
+  }, [activeAppTab, isAuthenticated, setActiveAppTab, setPublicSubTab]);
+
+  // Avoid flashing the dashboard before the redirect above takes effect.
+  if (activeAppTab === 'dashboard' && !isAuthenticated) {
+    return null;
+  }
 
   // Dedicated standalone Login Page without HeaderNavbar or Footer
   if (activeAppTab === 'public' && publicSubTab === 'login') {

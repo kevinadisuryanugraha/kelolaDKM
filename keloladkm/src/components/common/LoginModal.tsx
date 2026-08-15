@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShieldCheck, LogIn, AlertCircle } from 'lucide-react';
 import { login } from '../../api/client';
+import { isDemoModeEnabled } from '../../lib/demoMode';
 
 interface Props {
   onLogin: (token: string, user: any) => void;
@@ -25,8 +26,8 @@ export const LoginModal: React.FC<Props> = ({ onLogin, onClose }) => {
       }
       throw new Error('Fallback to local authentication');
     } catch (err: any) {
-      // Fallback for standalone frontend / demo mode when backend API is offline
-      if (email.length > 0) {
+      // Offline/demo fallback is only allowed when demo mode is explicitly enabled.
+      if (isDemoModeEnabled() && email.length > 0) {
         // Use partial response data if available, otherwise default mock
         const partialUser = err?.response?.data?.data?.user || err?.response?.data?.user || null;
         const mockUser = {
@@ -37,7 +38,7 @@ export const LoginModal: React.FC<Props> = ({ onLogin, onClose }) => {
         };
         onLogin('mock_token_demo_12345', mockUser);
       } else {
-        setError(err?.response?.data?.message || 'Gagal login. Periksa kredensial.');
+        setError(err?.response?.data?.message || 'Gagal login. Periksa kredensial dan pastikan backend aktif.');
       }
     } finally {
       setLoading(false);
