@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useI18n } from '../../i18n/I18nContext';
 import { X, Download, FileText, Table as TableIcon, Printer, CheckCircle } from 'lucide-react';
 import { DataTable, DataTableColumn } from './DataTable';
 
 export const ExportModal: React.FC = () => {
   const { exportModalData, closeExportModal, showToast } = useApp();
+  const { t } = useI18n();
   const { isOpen, title, data } = exportModalData;
 
   const [exportFormat, setExportFormat] = useState<'pdf' | 'excel' | 'csv' | 'print'>('pdf');
@@ -41,8 +43,8 @@ export const ExportModal: React.FC = () => {
               <Download className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-lg">Export & Download Laporan</h3>
-              <p className="text-emerald-200 text-xs">{title} • {data.length} Data Record</p>
+              <h3 className="font-bold text-lg">{t('exportModal.title')}</h3>
+              <p className="text-emerald-200 text-xs">{title} • {data.length} {t('exportModal.records')}</p>
             </div>
           </div>
           <button
@@ -58,7 +60,7 @@ export const ExportModal: React.FC = () => {
           {/* Format Selector */}
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-              Pilih Format File
+              {t('exportModal.formatLabel')}
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <button
@@ -70,7 +72,7 @@ export const ExportModal: React.FC = () => {
                 }`}
               >
                 <FileText className="w-6 h-6 text-red-500" />
-                <span>Dokumen PDF</span>
+                <span>{t('exportModal.pdf')}</span>
               </button>
 
               <button
@@ -82,7 +84,7 @@ export const ExportModal: React.FC = () => {
                 }`}
               >
                 <TableIcon className="w-6 h-6 text-emerald-600" />
-                <span>Excel Spreadsheet</span>
+                <span>{t('exportModal.excel')}</span>
               </button>
 
               <button
@@ -94,7 +96,7 @@ export const ExportModal: React.FC = () => {
                 }`}
               >
                 <FileText className="w-6 h-6 text-blue-500" />
-                <span>CSV Data</span>
+                <span>{t('exportModal.csv')}</span>
               </button>
 
               <button
@@ -106,7 +108,7 @@ export const ExportModal: React.FC = () => {
                 }`}
               >
                 <Printer className="w-6 h-6 text-slate-600 dark:text-slate-400" />
-                <span>Cetak / Print</span>
+                <span>{t('exportModal.print')}</span>
               </button>
             </div>
           </div>
@@ -114,7 +116,7 @@ export const ExportModal: React.FC = () => {
           {/* Document Preview Box */}
           <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 bg-slate-50 dark:bg-slate-900/50">
             <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-3 text-xs text-slate-500">
-              <span className="font-semibold text-slate-700 dark:text-slate-300">Pratinjau Kop Surat & Dokumen Resmi DKM</span>
+              <span className="font-semibold text-slate-700 dark:text-slate-300">{t('exportModal.preview')}</span>
               <span>Masjid Jami Nurul Iman</span>
             </div>
 
@@ -147,7 +149,7 @@ export const ExportModal: React.FC = () => {
             onClick={closeExportModal}
             className="px-4 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
           >
-            Batal
+            {t('exportModal.cancel')}
           </button>
           <button
             onClick={handleDownload}
@@ -157,7 +159,7 @@ export const ExportModal: React.FC = () => {
             {isExporting ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Memproses File...</span>
+                <span>{t('exportModal.processing')}</span>
               </>
             ) : (
               <>

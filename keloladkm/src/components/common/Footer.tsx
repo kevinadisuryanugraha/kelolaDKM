@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
+import { useI18n } from '../../i18n/I18nContext';
 import { MASJID_INFO } from '../../data/mockData';
 import {
   Building2,
@@ -15,6 +16,7 @@ import {
 
 export const Footer: React.FC = () => {
   const { setPublicSubTab, setActiveAppTab, isAuthenticated, setShowLoginModal } = useApp();
+  const { t } = useI18n();
 
   return (
     <footer className="bg-slate-900 text-slate-300 border-t border-slate-800 pt-12 pb-8">
@@ -53,17 +55,17 @@ export const Footer: React.FC = () => {
           {/* Col 2: Navigation & Public Pages */}
           <div className="space-y-3">
             <h4 className="font-bold text-sm text-white uppercase tracking-wider border-b border-emerald-800/60 pb-2">
-              Layanan Jamaah
+              {t('footer.services')}
             </h4>
             <ul className="space-y-2 text-xs">
               {[
-                { label: 'Jadwal Sholat & Adhan', tab: 'prayer_times' },
-                { label: 'Jadwal Kajian & Ustadz', tab: 'kajian' },
-                { label: 'Donasi & Infaq Online', tab: 'donation' },
-                { label: 'Kalkulator Zakat Fitrah & Mal', tab: 'zakat_calculator' },
-                { label: 'Transparansi Keuangan Kas', tab: 'financial_report' },
-                { label: 'Berita & Artikel Islami', tab: 'news' },
-                { label: 'Profil Pengurus & Imam', tab: 'staff' }
+                { labelKey: 'footer.links.prayer', tab: 'prayer_times' },
+                { labelKey: 'footer.links.kajian', tab: 'kajian' },
+                { labelKey: 'footer.links.donation', tab: 'donation' },
+                { labelKey: 'footer.links.zakat', tab: 'zakat_calculator' },
+                { labelKey: 'footer.links.financial', tab: 'financial_report' },
+                { labelKey: 'footer.links.news', tab: 'news' },
+                { labelKey: 'footer.links.staff', tab: 'staff' }
               ].map((link) => (
                 <li key={link.tab}>
                   <button
@@ -74,7 +76,7 @@ export const Footer: React.FC = () => {
                     className="text-slate-400 hover:text-emerald-400 flex items-center gap-1.5 transition-colors"
                   >
                     <ChevronRight className="w-3 h-3 text-emerald-500" />
-                    <span>{link.label}</span>
+                    <span>{t(link.labelKey)}</span>
                   </button>
                 </li>
               ))}
@@ -84,7 +86,7 @@ export const Footer: React.FC = () => {
           {/* Col 3: Donasi & Bank Syariah Accounts */}
           <div className="space-y-3">
             <h4 className="font-bold text-sm text-white uppercase tracking-wider border-b border-emerald-800/60 pb-2">
-              Rekening Infaq & Zakat
+              {t('footer.accounts')}
             </h4>
             <div className="space-y-2.5 text-xs">
               {MASJID_INFO.bankAccounts.map((acc, idx) => (
@@ -100,10 +102,10 @@ export const Footer: React.FC = () => {
           {/* Col 4: KelolaDKM System & QRIS */}
           <div className="space-y-3">
             <h4 className="font-bold text-sm text-white uppercase tracking-wider border-b border-emerald-800/60 pb-2">
-              KelolaDKM System
+              {t('footer.system')}
             </h4>
             <p className="text-xs text-slate-400">
-              Sistem informasi manajemen operasional, akuntansi keuangan, inventaris, dan ZISWAF terpadu Masjid Jami Nurul Iman.
+              {t('footer.systemDesc')}
             </p>
 
             <button
@@ -111,22 +113,22 @@ export const Footer: React.FC = () => {
               className="w-full py-2.5 px-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 border border-emerald-600/40 shadow-lg transition-all"
             >
               <ShieldCheck className="w-4 h-4 text-amber-300" />
-              <span>Masuk Dashboard DKM</span>
+              <span>{t('footer.dashboardBtn')}</span>
             </button>
 
             <div className="flex items-center gap-2 pt-2 text-[11px] text-slate-400">
               <QrCode className="w-4 h-4 text-amber-400" />
-              <span>Mendukung Donasi QRIS Standar Nasional</span>
+              <span>{t('footer.qris')}</span>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <p>© {new Date().getFullYear()} DKM Masjid Jami Nurul Iman Pejaten. Powered by KelolaDKM Enterprise Platform.</p>
+          <p>© {new Date().getFullYear()} {t('footer.copyright')}</p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1 text-slate-400">
-              Dibuat dengan <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> untuk Kemakmuran Masjid
+              {t('footer.madeWith')} <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> {t('footer.forMosque')}
             </span>
           </div>
         </div>
