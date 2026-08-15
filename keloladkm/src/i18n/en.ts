@@ -26,6 +26,7 @@ const en: Record<string, any> = {
     faqContact: 'FAQ & Contact',
     dashboard: 'KelolaDKM System',
     public: 'Public Site',
+    more: 'More',
   },
   dashboard: {
     overview: 'Dashboard Overview',

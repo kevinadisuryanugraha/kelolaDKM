@@ -26,6 +26,7 @@ const id = {
     faqContact: 'FAQ & Kontak',
     dashboard: 'KelolaDKM System',
     public: 'Web Public',
+    more: 'Lainnya',
   },
   dashboard: {
     overview: 'Ringkasan Dashboard',

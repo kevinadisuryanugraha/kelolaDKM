@@ -3,14 +3,18 @@
  * Tries backend API; on failure falls back to localStorage + mock data.
  */
 import * as api from './client';
+import { snakeToCamel } from '../lib/utils';
 import {
-  FINANCIAL_TRANSACTIONS, DONATION_CAMPAIGNS, DONOR_RECORDS,
+  FINANCIAL_TRANSACTIONS, COA_ACCOUNTS, BUDGET_PLANS,
+  DONATION_CAMPAIGNS, DONOR_RECORDS,
   QURBAN_PARTICIPANTS, INVENTORY_ITEMS, ROOM_BOOKINGS,
   OFFICIAL_LETTERS, AUDIT_LOGS, KAJIAN_EVENTS
 } from '../data/mockData';
 
 const STORAGE_KEYS = {
   transactions: 'dkm_transactions',
+  accounts: 'dkm_accounts',
+  budgets: 'dkm_budgets',
   campaigns: 'dkm_campaigns',
   donorRecords: 'dkm_donorRecords',
   qurbanParticipants: 'dkm_qurbanParticipants',
@@ -37,8 +41,8 @@ const save = (key: string, data: unknown) => {
 async function apiFirst<T>(apiCall: () => Promise<any>, storageKey: string, fallback: T): Promise<T> {
   try {
     const res = await apiCall();
-    // Normalize response: { data: [...] } or { data: { data: [...] } }
-    const data = res?.data?.data ?? res?.data ?? res;
+    // Laravel returns snake_case; the frontend types use camelCase.
+    const data = snakeToCamel(res?.data?.data ?? res?.data ?? res);
     if (Array.isArray(data)) { save(storageKey, data); return data as T; }
     if (data && typeof data === 'object') { save(storageKey, data); return data as T; }
     return load(storageKey, fallback);
@@ -50,9 +54,11 @@ async function apiFirst<T>(apiCall: () => Promise<any>, storageKey: string, fall
 // ── Public API (fetches all data, hydrates context) ──
 
 export async function fetchAllDashboardData() {
-  const [transactions, campaigns, donorRecords, qurbanParticipants,
+  const [transactions, accounts, budgets, campaigns, donorRecords, qurbanParticipants,
     inventoryItems, letters, auditLogs, kajianEvents] = await Promise.all([
     apiFirst(() => api.getTransactions(), STORAGE_KEYS.transactions, FINANCIAL_TRANSACTIONS),
+    apiFirst(() => api.getAccounts(), STORAGE_KEYS.accounts, COA_ACCOUNTS),
+    apiFirst(() => api.getBudgets(), STORAGE_KEYS.budgets, BUDGET_PLANS),
     apiFirst(() => api.getCampaigns(), STORAGE_KEYS.campaigns, DONATION_CAMPAIGNS),
     apiFirst(() => api.getDonorRecords?.() ?? Promise.resolve(DONOR_RECORDS), STORAGE_KEYS.donorRecords, DONOR_RECORDS),
     apiFirst(() => api.getQurbanParticipants?.() ?? Promise.resolve(QURBAN_PARTICIPANTS), STORAGE_KEYS.qurbanParticipants, QURBAN_PARTICIPANTS),
@@ -62,7 +68,7 @@ export async function fetchAllDashboardData() {
     apiFirst(() => api.getKajianEvents?.() ?? Promise.resolve(KAJIAN_EVENTS), STORAGE_KEYS.kajianEvents, KAJIAN_EVENTS),
   ]);
 
-  return { transactions, campaigns, donorRecords, qurbanParticipants, inventoryItems, letters, auditLogs, kajianEvents };
+  return { transactions, accounts, budgets, campaigns, donorRecords, qurbanParticipants, inventoryItems, letters, auditLogs, kajianEvents };
 }
 
 // ── Mutations (API-first, localStorage on failure) ──

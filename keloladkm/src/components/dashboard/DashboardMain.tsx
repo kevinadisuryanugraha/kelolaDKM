@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useApp } from '../../context/AppContext';
+import { useI18n } from '../../i18n/I18nContext';
 import { MASJID_INFO, PRAYER_TIMES_TODAY } from '../../data/mockData';
 import {
   LayoutDashboard,
@@ -49,21 +50,22 @@ export const DashboardMain: React.FC = () => {
     isDarkMode,
     toggleDarkMode
   } = useApp();
+  const { t } = useI18n();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Sidebar menu items
   const menuNav = [
-    { id: 'overview', label: 'Ringkasan Dashboard', icon: LayoutDashboard },
-    { id: 'keuangan', label: 'Akuntansi & Keuangan', icon: DollarSign },
-    { id: 'donasi_ziswaf', label: 'Donasi, Zakat & Qurban', icon: Heart },
-    { id: 'inventaris', label: 'Inventaris & Sarpras', icon: Package },
-    { id: 'agenda_event', label: 'Agenda, Kajian & QR Check-In', icon: Calendar },
-    { id: 'surat_dokumen', label: 'Surat & Arsip Dokumen', icon: FileText },
+    { id: 'overview', label: t('dashboard.overview'), icon: LayoutDashboard },
+    { id: 'keuangan', label: t('dashboard.keuangan'), icon: DollarSign },
+    { id: 'donasi_ziswaf', label: t('dashboard.donasi'), icon: Heart },
+    { id: 'inventaris', label: t('dashboard.inventaris'), icon: Package },
+    { id: 'agenda_event', label: t('dashboard.agenda'), icon: Calendar },
+    { id: 'surat_dokumen', label: t('dashboard.surat'), icon: FileText },
 
-    { id: 'website_cms', label: 'Website CMS & Media', icon: Globe },
-    { id: 'broadcast', label: 'Broadcast WA / Telegram', icon: Send },
-    { id: 'audit_log', label: 'Audit Log & Keamanan', icon: Shield }
+    { id: 'website_cms', label: t('dashboard.cms'), icon: Globe },
+    { id: 'broadcast', label: t('dashboard.broadcast'), icon: Send },
+    { id: 'audit_log', label: t('dashboard.audit'), icon: Shield }
   ];
 
   const totalKas = MASJID_INFO.stats.totalKas;
@@ -75,15 +77,37 @@ export const DashboardMain: React.FC = () => {
   const gregorianDate = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now);
   const hijriDate = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', { day: 'numeric', month: 'long', year: 'numeric' }).format(now);
 
-  const chartOverviewData = [
-    { day: 'Senin', KasMasuk: 4200000, KasKeluar: 1200000 },
-    { day: 'Selasa', KasMasuk: 3500000, KasKeluar: 800000 },
-    { day: 'Rabu', KasMasuk: 5100000, KasKeluar: 1400000 },
-    { day: 'Kamis', KasMasuk: 4800000, KasKeluar: 950000 },
-    { day: 'Jumat', KasMasuk: 12450000, KasKeluar: 3200000 },
-    { day: 'Sabtu', KasMasuk: 6200000, KasKeluar: 1800000 },
-    { day: 'Minggu', KasMasuk: 7800000, KasKeluar: 2100000 }
-  ];
+  // Build the cash-flow chart from real transactions (most recent 7 days with data).
+  const chartOverviewData = (() => {
+    const byDate = new Map<string, { masuk: number; keluar: number }>();
+    for (const t of transactions) {
+      if (!t.date) continue;
+      const cur = byDate.get(t.date) ?? { masuk: 0, keluar: 0 };
+      if (t.type === 'Masuk') cur.masuk += Number(t.amount) || 0;
+      else cur.keluar += Number(t.amount) || 0;
+      byDate.set(t.date, cur);
+    }
+    const dates = Array.from(byDate.keys()).sort();
+    if (dates.length === 0) {
+      return [
+        { day: 'Senin', KasMasuk: 0, KasKeluar: 0 },
+        { day: 'Selasa', KasMasuk: 0, KasKeluar: 0 },
+        { day: 'Rabu', KasMasuk: 0, KasKeluar: 0 },
+        { day: 'Kamis', KasMasuk: 0, KasKeluar: 0 },
+        { day: 'Jumat', KasMasuk: 0, KasKeluar: 0 },
+        { day: 'Sabtu', KasMasuk: 0, KasKeluar: 0 },
+        { day: 'Minggu', KasMasuk: 0, KasKeluar: 0 },
+      ];
+    }
+    return dates.slice(-7).map((date) => {
+      const { masuk, keluar } = byDate.get(date)!;
+      return {
+        day: new Intl.DateTimeFormat('id-ID', { weekday: 'short' }).format(new Date(`${date}T00:00:00`)),
+        KasMasuk: masuk,
+        KasKeluar: keluar,
+      };
+    });
+  })();
 
   return (
     <div className="min-h-screen bg-slate-100/60 dark:bg-slate-950 flex flex-col lg:flex-row font-sans">

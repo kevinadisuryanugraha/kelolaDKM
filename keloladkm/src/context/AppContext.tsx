@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import {
   UserRole,
+  FinancialAccount,
   FinancialTransaction,
+  BudgetPlan,
   DonationCampaign,
   DonorRecord,
   QurbanParticipant,
@@ -13,6 +15,8 @@ import {
 } from '../types';
 import {
   FINANCIAL_TRANSACTIONS,
+  COA_ACCOUNTS,
+  BUDGET_PLANS,
   DONATION_CAMPAIGNS,
   DONOR_RECORDS,
   QURBAN_PARTICIPANTS,
@@ -65,6 +69,9 @@ interface AppContextType {
   transactions: FinancialTransaction[];
   addTransaction: (tx: Omit<FinancialTransaction, 'id' | 'status' | 'refNumber'>) => void;
   approveTransaction: (id: string) => void;
+
+  accounts: FinancialAccount[];
+  budgets: BudgetPlan[];
   
   campaigns: DonationCampaign[];
   addCampaign: (campaign: Omit<DonationCampaign, 'id' | 'collectedAmount' | 'donorCount'>) => void;
@@ -192,6 +199,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [isDarkMode]);
 
   const [transactions, setTransactions] = useState<FinancialTransaction[]>(() => loadFromStorage('transactions', FINANCIAL_TRANSACTIONS));
+  const [accounts, setAccounts] = useState<FinancialAccount[]>(() => loadFromStorage('accounts', COA_ACCOUNTS));
+  const [budgets, setBudgets] = useState<BudgetPlan[]>(() => loadFromStorage('budgets', BUDGET_PLANS));
   const [campaigns, setCampaigns] = useState<DonationCampaign[]>(DONATION_CAMPAIGNS);
   const [donorRecords, setDonorRecords] = useState<DonorRecord[]>(DONOR_RECORDS);
   const [qurbanParticipants, setQurbanParticipants] = useState<QurbanParticipant[]>(QURBAN_PARTICIPANTS);
@@ -209,6 +218,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       try {
         const data = await fetchAllDashboardData();
         setTransactions(data.transactions);
+        setAccounts(data.accounts);
+        setBudgets(data.budgets);
         setCampaigns(data.campaigns);
         setDonorRecords(data.donorRecords);
         setQurbanParticipants(data.qurbanParticipants);
@@ -235,6 +246,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // ── Persist data mutations ──
   useEffect(() => { localStorage.setItem('dkm_transactions', JSON.stringify(transactions)); }, [transactions]);
+  useEffect(() => { localStorage.setItem('dkm_accounts', JSON.stringify(accounts)); }, [accounts]);
+  useEffect(() => { localStorage.setItem('dkm_budgets', JSON.stringify(budgets)); }, [budgets]);
   useEffect(() => { localStorage.setItem('dkm_campaigns', JSON.stringify(campaigns)); }, [campaigns]);
   useEffect(() => { localStorage.setItem('dkm_donorRecords', JSON.stringify(donorRecords)); }, [donorRecords]);
   useEffect(() => { localStorage.setItem('dkm_qurbanParticipants', JSON.stringify(qurbanParticipants)); }, [qurbanParticipants]);
@@ -440,6 +453,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         transactions,
         addTransaction,
         approveTransaction,
+        accounts,
+        budgets,
         campaigns,
         addCampaign,
         donorRecords,

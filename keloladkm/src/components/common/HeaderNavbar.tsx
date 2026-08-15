@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useI18n } from '../../i18n/I18nContext';
 import { MASJID_INFO } from '../../data/mockData';
 import { getUpcomingPrayer, TODAY_PRAYER_TIMES } from '../../utils/prayerTimes';
 import {
@@ -25,6 +26,7 @@ export const HeaderNavbar: React.FC = () => {
     isAuthenticated,
     logout
   } = useApp();
+  const { t, lang, setLang } = useI18n();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -41,20 +43,20 @@ export const HeaderNavbar: React.FC = () => {
   }, []);
 
   const primaryNavItems = [
-    { id: 'home', label: 'Beranda' },
-    { id: 'prayer_times', label: 'Jadwal Sholat' },
-    { id: 'kajian', label: 'Kajian' },
-    { id: 'donation', label: 'Donasi' },
-    { id: 'financial_report', label: 'Laporan Kas' }
+    { id: 'home', label: t('nav.home') },
+    { id: 'prayer_times', label: t('nav.prayerTimes') },
+    { id: 'kajian', label: t('nav.kajian') },
+    { id: 'donation', label: t('nav.donation') },
+    { id: 'financial_report', label: t('nav.financialReport') }
   ];
 
   const secondaryNavItems = [
-    { id: 'about', label: 'Tentang Masjid' },
-    { id: 'organization', label: 'Pengurus DKM' },
-    { id: 'staff', label: 'Imam & Muadzin' },
-    { id: 'zakat_calculator', label: 'Kalkulator Zakat' },
-    { id: 'news', label: 'Berita & Artikel' },
-    { id: 'faq_contact', label: 'FAQ & Kontak' }
+    { id: 'about', label: t('nav.about') },
+    { id: 'organization', label: t('nav.organization') },
+    { id: 'staff', label: t('nav.staff') },
+    { id: 'zakat_calculator', label: t('nav.zakatCalculator') },
+    { id: 'news', label: t('nav.news') },
+    { id: 'faq_contact', label: t('nav.faqContact') }
   ];
 
   return (
@@ -136,7 +138,7 @@ export const HeaderNavbar: React.FC = () => {
             {/* Dropdown for Secondary Links */}
             <div className="relative group">
               <button className="px-3.5 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-slate-100/60 dark:hover:bg-slate-800/60 flex items-center gap-1 font-semibold whitespace-nowrap">
-                <span>Lainnya</span>
+                <span>{t('nav.more')}</span>
                 <ChevronDown className="w-3.5 h-3.5 opacity-70 group-hover:rotate-180 transition-transform" />
               </button>
               <div className="absolute right-0 top-full mt-1 w-52 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 py-2 hidden group-hover:block z-50 animate-in fade-in duration-150">
@@ -160,6 +162,15 @@ export const HeaderNavbar: React.FC = () => {
 
         {/* Action Controls & App Switcher */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Language Toggle */}
+          <button
+            onClick={() => setLang(lang === 'id' ? 'en' : 'id')}
+            className="px-2.5 py-1.5 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border border-slate-200 dark:border-slate-700"
+            title="Bahasa / Language"
+          >
+            {lang === 'id' ? 'EN' : 'ID'}
+          </button>
+
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}

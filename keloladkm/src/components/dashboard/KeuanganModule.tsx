@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useApp } from '../../context/AppContext';
-import { COA_ACCOUNTS, BUDGET_PLANS } from '../../data/mockData';
 import { FilterTabs } from '../common/FilterTabs';
 import { DataTable, DataTableColumn } from '../common/DataTable';
 import { DollarSign, Plus, CheckCircle, Download, X, RefreshCw, CheckCircle2, ShieldCheck, PieChart, Landmark } from 'lucide-react';
@@ -39,7 +38,7 @@ interface BankReconcileItem {
 }
 
 export const KeuanganModule: React.FC = () => {
-  const { transactions, addTransaction, approveTransaction, openExportModal, showToast } = useApp();
+  const { transactions, addTransaction, approveTransaction, accounts, budgets, openExportModal, showToast } = useApp();
 
   const [activeTab, setActiveTab] = useState<string>('kas');
   const [isAddTxModalOpen, setIsAddTxModalOpen] = useState(false);
@@ -86,7 +85,7 @@ export const KeuanganModule: React.FC = () => {
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const coaObj = COA_ACCOUNTS.find((c) => c.code === accountCode);
+    const coaObj = accounts.find((c) => c.code === accountCode);
     addTransaction({
       date: new Date().toISOString().slice(0, 10),
       type,
@@ -392,7 +391,7 @@ export const KeuanganModule: React.FC = () => {
             <h3 className="font-bold text-base text-slate-900 dark:text-white">Chart of Accounts (COA) Standard DKM</h3>
             <p className="text-xs text-slate-500">Bagan akun standar akuntansi masjid untuk Aset, Penerimaan, dan Pengeluaran</p>
           </div>
-          <DataTable columns={coaColumns} data={COA_ACCOUNTS} keyField="code" minWidth="w-full min-w-[650px]" />
+          <DataTable columns={coaColumns} data={accounts} keyField="code" minWidth="w-full min-w-[650px]" />
         </GlassCard>
       )}
 
@@ -426,20 +425,20 @@ export const KeuanganModule: React.FC = () => {
               <div className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
                 <span className="text-slate-500 block text-[10px]">Total Anggaran:</span>
                 <span className="font-bold text-slate-900 dark:text-white text-sm">
-                  Rp {BUDGET_PLANS.reduce((sum, b) => sum + b.allocatedAmount, 0).toLocaleString('id-ID')}
+                  Rp {budgets.reduce((sum, b) => sum + b.allocatedAmount, 0).toLocaleString('id-ID')}
                 </span>
               </div>
               <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/60 rounded-xl border border-emerald-200 dark:border-emerald-800">
                 <span className="text-emerald-600 dark:text-emerald-400 block text-[10px]">Total Terpakai:</span>
                 <span className="font-bold text-emerald-700 dark:text-emerald-300 text-sm">
-                  Rp {BUDGET_PLANS.reduce((sum, b) => sum + b.usedAmount, 0).toLocaleString('id-ID')}
+                  Rp {budgets.reduce((sum, b) => sum + b.usedAmount, 0).toLocaleString('id-ID')}
                 </span>
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            {BUDGET_PLANS.map((bg) => {
+            {budgets.map((bg) => {
               const p = Math.round((bg.usedAmount / bg.allocatedAmount) * 100);
               return (
                 <div key={bg.id} className="p-5 bg-white dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3 shadow-xs">
@@ -528,7 +527,7 @@ export const KeuanganModule: React.FC = () => {
                     onChange={(e) => setAccountCode(e.target.value)}
                     className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white font-medium"
                   >
-                    {COA_ACCOUNTS.map((c) => (
+                    {accounts.map((c) => (
                       <option key={c.code} value={c.code}>{c.code} - {c.name}</option>
                     ))}
                   </select>
