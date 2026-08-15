@@ -103,6 +103,7 @@ interface AppContextType {
   // Toasts
   toasts: ToastNotification[];
   showToast: (message: string, type?: 'success' | 'info' | 'error') => void;
+  dismissToast: (id: string) => void;
   
   // Running text (public website ticker)
   runningText: string;
@@ -273,6 +274,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 4000);
+  };
+
+  const dismissToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
   const addAuditLog = (action: string, module: string, details: string) => {
@@ -499,6 +504,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setRunningText,
         toasts,
         showToast,
+        dismissToast,
         exportModalData,
         openExportModal,
         closeExportModal

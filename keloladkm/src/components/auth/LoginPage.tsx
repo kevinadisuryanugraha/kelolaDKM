@@ -24,7 +24,7 @@ import { UserRole } from '../../types';
 import { MASJID_INFO } from '../../data/mockData';
 
 export const LoginPage: React.FC = () => {
-  const { login, setPublicSubTab, setCurrentRole } = useApp();
+  const { login, setPublicSubTab, setCurrentRole, showToast } = useApp();
   const { t } = useI18n();
 
   const [email, setEmail] = useState('');
@@ -205,7 +205,7 @@ export const LoginPage: React.FC = () => {
                 </label>
                 <button
                   type="button"
-                  onClick={() => alert('Fitur reset kata sandi telah dikirim ke email pengurus terdaftar.')}
+                  onClick={() => showToast('Fitur reset kata sandi belum tersedia. Silakan hubungi admin DKM.', 'info')}
                   className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
                 >
                   {t('loginPage.forgot')}

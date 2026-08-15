@@ -44,6 +44,7 @@ export const DashboardMain: React.FC = () => {
     authUser,
     transactions,
     auditLogs,
+    accounts,
     donorRecords,
     kajianEvents,
     openExportModal,
@@ -68,7 +69,7 @@ export const DashboardMain: React.FC = () => {
     { id: 'audit_log', label: t('dashboard.audit'), icon: Shield }
   ];
 
-  const totalKas = MASJID_INFO.stats.totalKas;
+  const totalKas = accounts.reduce((sum, a) => (a.type === 'Aset' ? sum + Number(a.balance) : sum), 0) || MASJID_INFO.stats.totalKas;
   const pendingApprovals = transactions.filter((t) => t.status === 'Pending').length;
   const totalDonasi = donorRecords.reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
   const agendaCount = kajianEvents.length;

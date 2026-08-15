@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { CreditCard, ShieldCheck } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
 
 interface MidtransButtonProps {
   amount: number;
@@ -32,6 +33,7 @@ export const MidtransButton: React.FC<MidtransButtonProps> = ({
   className = '',
 }) => {
   const clientKey = import.meta.env.VITE_MIDTRANS_CLIENT_KEY || '';
+  const { showToast } = useApp();
 
   useEffect(() => {
     if (!clientKey) return;
@@ -51,13 +53,13 @@ export const MidtransButton: React.FC<MidtransButtonProps> = ({
 
   const handlePay = () => {
     if (!clientKey) {
-      alert('Midtrans payment gateway belum dikonfigurasi. Silakan hubungi admin DKM.');
+      showToast('Midtrans payment gateway belum dikonfigurasi. Silakan hubungi admin DKM.', 'info');
       return;
     }
 
     const snap = (window as any).snap;
     if (!snap) {
-      alert('Sistem pembayaran sedang dimuat. Silakan coba beberapa saat lagi.');
+      showToast('Sistem pembayaran sedang dimuat. Silakan coba beberapa saat lagi.', 'info');
       return;
     }
 

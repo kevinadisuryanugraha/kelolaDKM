@@ -5,6 +5,7 @@ import { HeaderNavbar } from './components/common/HeaderNavbar';
 import { Footer } from './components/common/Footer';
 import { ExportModal } from './components/common/ExportModal';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { ToastContainer } from './components/common/ToastContainer';
 import { I18nProvider } from './i18n/I18nContext';
 
 // Public Pages — lazy loaded
@@ -131,6 +132,7 @@ export default function App() {
           <AppProvider>
             <URLSync />
             <MainAppContent />
+            <ToastContainer />
           </AppProvider>
         </BrowserRouter>
       </I18nProvider>

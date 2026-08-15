@@ -10,18 +10,40 @@ import { DataTable, DataTableColumn } from '../common/DataTable';
 import { FinancialTransaction } from '../../types';
 
 export const PublicFinancialReport: React.FC = () => {
-  const { transactions, openExportModal } = useApp();
+  const { transactions, openExportModal, accounts } = useApp();
 
   const totalMasuk = transactions.filter((t) => t.type === 'Masuk').reduce((acc, t) => acc + t.amount, 0);
   const totalKeluar = transactions.filter((t) => t.type === 'Keluar').reduce((acc, t) => acc + t.amount, 0);
-  const totalSaldo = MASJID_INFO.stats.totalKas;
+  const totalSaldo = accounts.reduce((sum, a) => (a.type === 'Aset' ? sum + Number(a.balance) : sum), 0) || MASJID_INFO.stats.totalKas;
 
-  const chartData = [
-    { month: 'Pekan I Juli', Pemasukan: 18500000, Pengeluaran: 6200000 },
-    { month: 'Pekan II Juli', Pemasukan: 24000000, Pengeluaran: 8400000 },
-    { month: 'Pekan III Juli', Pemasukan: 21500000, Pengeluaran: 5100000 },
-    { month: 'Pekan IV Juli', Pemasukan: 28450000, Pengeluaran: 4650000 }
-  ];
+  // Aggregate the trend chart from real transactions (last 7 days with data).
+  const chartData = (() => {
+    const byDate = new Map<string, { Pemasukan: number; Pengeluaran: number }>();
+    for (const t of transactions) {
+      if (!t.date) continue;
+      const cur = byDate.get(t.date) ?? { Pemasukan: 0, Pengeluaran: 0 };
+      if (t.type === 'Masuk') cur.Pemasukan += Number(t.amount) || 0;
+      else cur.Pengeluaran += Number(t.amount) || 0;
+      byDate.set(t.date, cur);
+    }
+    const dates = Array.from(byDate.keys()).sort();
+    if (dates.length === 0) {
+      return [
+        { month: 'Pekan I', Pemasukan: 0, Pengeluaran: 0 },
+        { month: 'Pekan II', Pemasukan: 0, Pengeluaran: 0 },
+        { month: 'Pekan III', Pemasukan: 0, Pengeluaran: 0 },
+        { month: 'Pekan IV', Pemasukan: 0, Pengeluaran: 0 },
+      ];
+    }
+    return dates.slice(-7).map((date) => {
+      const { Pemasukan, Pengeluaran } = byDate.get(date)!;
+      return {
+        month: new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short' }).format(new Date(`${date}T00:00:00`)),
+        Pemasukan,
+        Pengeluaran,
+      };
+    });
+  })();
 
   const transactionColumns: DataTableColumn<FinancialTransaction>[] = [
     { key: 'refNumber', header: 'Ref / No', className: 'font-mono text-slate-500 font-bold whitespace-nowrap' },
