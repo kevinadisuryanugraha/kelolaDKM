@@ -48,7 +48,6 @@ export default defineConfig(() => {
         output: {
           manualChunks: {
             vendor: ['react', 'react-dom', 'react-router-dom'],
-            charts: ['recharts'],
             maps: ['@vis.gl/react-google-maps'],
             icons: ['lucide-react'],
           },

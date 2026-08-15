@@ -73,25 +73,77 @@ export async function fetchAllDashboardData() {
 }
 
 // ── Mutations ──
-// Each mutation returns the server-created record (snake_case → camelCase)
-// or null when the backend is offline.
+// Each mutation returns the server-created record (snake_case → camelCase),
+// or null when the backend is offline. Offline mutations are queued and
+// retried later via flushPendingMutations().
 
-async function mutate(apiCall: () => Promise<any>) {
+const PENDING_KEY = 'dkm_pending_mutations';
+
+type PendingMutation = { type: string; payload: any; queuedAt: number };
+
+export function getPendingMutations(): PendingMutation[] {
+  try { return JSON.parse(localStorage.getItem(PENDING_KEY) || '[]'); }
+  catch { return []; }
+}
+
+export function clearPendingMutations(): void {
+  try { localStorage.removeItem(PENDING_KEY); } catch {}
+}
+
+function enqueueMutation(type: string, payload: any): void {
+  try {
+    const queue = getPendingMutations();
+    queue.push({ type, payload, queuedAt: Date.now() });
+    localStorage.setItem(PENDING_KEY, JSON.stringify(queue));
+  } catch { /* quota exceeded */ }
+}
+
+async function mutate(type: string, apiCall: () => Promise<any>, payload: any) {
   try {
     const res = await apiCall();
     return snakeToCamel(res?.data?.data ?? res?.data ?? res);
   } catch {
+    enqueueMutation(type, payload);
     return null;
   }
 }
 
-export const createTransaction = (data: any) => mutate(() => api.createTransaction(camelToSnake(data)));
-export const createCampaign = (data: any) => mutate(() => api.createCampaign(camelToSnake(data)));
-export const createDonorRecord = (data: any) => mutate(() => api.createDonorRecord(camelToSnake(data)));
-export const createQurbanParticipant = (data: any) => mutate(() => api.createQurbanParticipant(camelToSnake(data)));
-export const createInventoryItem = (data: any) => mutate(() => api.createInventoryItem(camelToSnake(data)));
-export const createRoomBooking = (data: any) => mutate(() => api.createRoomBooking(camelToSnake(data)));
-export const createLetter = (data: any) => mutate(() => api.createLetter(camelToSnake(data)));
-export const createKajianEvent = (data: any) => mutate(() => api.createKajianEvent(camelToSnake(data)));
+const MUTATION_HANDLERS: Record<string, (payload: any) => Promise<any>> = {
+  transaction: (p) => api.createTransaction(camelToSnake(p)),
+  campaign: (p) => api.createCampaign(camelToSnake(p)),
+  donor_record: (p) => api.createDonorRecord(camelToSnake(p)),
+  qurban_participant: (p) => api.createQurbanParticipant(camelToSnake(p)),
+  inventory_item: (p) => api.createInventoryItem(camelToSnake(p)),
+  room_booking: (p) => api.createRoomBooking(camelToSnake(p)),
+  letter: (p) => api.createLetter(camelToSnake(p)),
+  kajian_event: (p) => api.createKajianEvent(camelToSnake(p)),
+};
+
+export async function flushPendingMutations(): Promise<void> {
+  const queue = getPendingMutations();
+  if (queue.length === 0) return;
+
+  const remaining: PendingMutation[] = [];
+  for (const item of queue) {
+    const handler = MUTATION_HANDLERS[item.type];
+    if (!handler) continue;
+    try {
+      await handler(item.payload);
+    } catch {
+      remaining.push(item);
+    }
+  }
+
+  try { localStorage.setItem(PENDING_KEY, JSON.stringify(remaining)); } catch {}
+}
+
+export const createTransaction = (data: any) => mutate('transaction', () => api.createTransaction(camelToSnake(data)), data);
+export const createCampaign = (data: any) => mutate('campaign', () => api.createCampaign(camelToSnake(data)), data);
+export const createDonorRecord = (data: any) => mutate('donor_record', () => api.createDonorRecord(camelToSnake(data)), data);
+export const createQurbanParticipant = (data: any) => mutate('qurban_participant', () => api.createQurbanParticipant(camelToSnake(data)), data);
+export const createInventoryItem = (data: any) => mutate('inventory_item', () => api.createInventoryItem(camelToSnake(data)), data);
+export const createRoomBooking = (data: any) => mutate('room_booking', () => api.createRoomBooking(camelToSnake(data)), data);
+export const createLetter = (data: any) => mutate('letter', () => api.createLetter(camelToSnake(data)), data);
+export const createKajianEvent = (data: any) => mutate('kajian_event', () => api.createKajianEvent(camelToSnake(data)), data);
 
 export { STORAGE_KEYS, load, save };

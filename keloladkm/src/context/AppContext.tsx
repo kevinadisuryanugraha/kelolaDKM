@@ -28,6 +28,7 @@ import {
 } from '../data/mockData';
 import {
   fetchAllDashboardData,
+  flushPendingMutations,
   createTransaction as apiCreateTransaction,
   createCampaign as apiCreateCampaign,
   createDonorRecord as apiCreateDonorRecord,
@@ -229,6 +230,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setLetters(data.letters);
         setAuditLogs(data.auditLogs);
         setKajianEvents(data.kajianEvents);
+
+        // Retry any mutations that failed while offline.
+        await flushPendingMutations();
       } catch {
         // Keep current (localStorage/mock) data when offline.
       }

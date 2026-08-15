@@ -3,8 +3,8 @@ import { motion } from 'motion/react';
 import { useApp } from '../../context/AppContext';
 import { MASJID_INFO } from '../../data/mockData';
 import { Download, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
-import { ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from 'recharts';
 import { PageHeader } from '../common/PageHeader';
+import { SimpleChart } from '../common/SimpleChart';
 import { GlassCard } from '../common/GlassCard';
 import { DataTable, DataTableColumn } from '../common/DataTable';
 import { FinancialTransaction } from '../../types';
@@ -118,16 +118,17 @@ export const PublicFinancialReport: React.FC = () => {
         </h3>
 
         <div className="h-72 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#94a3b8' }} />
-              <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v) => `Rp ${(v / 1000000).toFixed(0)}Jt`} />
-              <Tooltip formatter={(value: any) => [`Rp ${Number(value).toLocaleString('id-ID')}`, '']} />
-              <Bar dataKey="Pemasukan" fill="#10b981" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="Pengeluaran" fill="#f43f5e" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          <SimpleChart
+            type="bar"
+            data={chartData}
+            xKey="month"
+            series={[
+              { key: 'Pemasukan', label: 'Pemasukan', color: '#10b981' },
+              { key: 'Pengeluaran', label: 'Pengeluaran', color: '#f43f5e' },
+            ]}
+            formatValue={(v) => v.toLocaleString('id-ID')}
+            formatAxis={(v) => `${(v / 1000000).toFixed(0)}Jt`}
+          />
         </div>
       </GlassCard>
 

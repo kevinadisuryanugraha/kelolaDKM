@@ -30,7 +30,7 @@ import { SuratDokumenModule } from './SuratDokumenModule';
 import { WebsiteCMSModule } from './WebsiteCMSModule';
 import { BroadcastNotificationModule } from './BroadcastNotificationModule';
 import { AuditLogModule } from './AuditLogModule';
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { SimpleChart } from '../common/SimpleChart';
 import { GlassCard } from '../common/GlassCard';
 import { BentoGrid, BentoItem } from '../common/BentoGrid';
 
@@ -365,16 +365,17 @@ export const DashboardMain: React.FC = () => {
                     </button>
                   </div>
                   <div className="h-72 w-full pt-2">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={chartOverviewData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-                        <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#94a3b8' }} />
-                        <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v) => `Rp ${(v / 1000000).toFixed(1)}Jt`} />
-                        <Tooltip formatter={(v: any) => [`Rp ${Number(v).toLocaleString('id-ID')}`, '']} />
-                        <Area type="monotone" dataKey="KasMasuk" stroke="#10b981" fill="#10b981" fillOpacity={0.25} />
-                        <Area type="monotone" dataKey="KasKeluar" stroke="#f43f5e" fill="#f43f5e" fillOpacity={0.25} />
-                      </AreaChart>
-                    </ResponsiveContainer>
+                    <SimpleChart
+                      type="area"
+                      data={chartOverviewData}
+                      xKey="day"
+                      series={[
+                        { key: 'KasMasuk', label: 'Kas Masuk', color: '#10b981' },
+                        { key: 'KasKeluar', label: 'Kas Keluar', color: '#f43f5e' },
+                      ]}
+                      formatValue={(v) => v.toLocaleString('id-ID')}
+                      formatAxis={(v) => `${(v / 1000000).toFixed(1)}Jt`}
+                    />
                   </div>
                 </GlassCard>
 
