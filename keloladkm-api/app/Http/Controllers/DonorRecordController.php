@@ -26,6 +26,9 @@ class DonorRecordController extends BaseApiController
 
     public function store(Request $request)
     {
+        if (! $request->has('donation_campaign_id') && $request->has('campaign_id')) {
+            $request->merge(['donation_campaign_id' => $request->input('campaign_id')]);
+        }
         $data = $request->validate($this->rules);
         $data['date'] = now()->toDateString();
         $data['status'] = 'Diterima';

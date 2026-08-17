@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useApp } from '../../context/AppContext';
-import { Calculator, CheckCircle, Scale, AlertCircle } from 'lucide-react';
+import { Calculator, CheckCircle, Scale, AlertCircle, QrCode, Copy, Check, MessageSquare, Printer, ShieldCheck, X } from 'lucide-react';
 import { PageHeader } from '../common/PageHeader';
 import { GlassCard } from '../common/GlassCard';
+import { printOfficialReceipt } from '../../utils/exportOfficialDoc';
+import { openWhatsAppDirect } from '../../utils/whatsappGateway';
+import { MASJID_INFO } from '../../data/mockData';
 
 export const ZakatCalculatorPage: React.FC = () => {
   const { addDonorRecord, showToast } = useApp();
 
   const [zakatType, setZakatType] = useState<'fitrah' | 'mal' | 'fidyah' | 'infaq'>('fitrah');
+  const [isPayModalOpen, setIsPayModalOpen] = useState(false);
+  const [muzakkiName, setMuzakkiName] = useState('Bpk. H. Abdullah');
+  const [muzakkiPhone, setMuzakkiPhone] = useState('081298765432');
+  const [copiedBank, setCopiedBank] = useState<string | null>(null);
 
   // Zakat Fitrah state
   const [peopleCount, setPeopleCount] = useState<number>(4);
@@ -46,16 +53,45 @@ export const ZakatCalculatorPage: React.FC = () => {
       ? fidyahTotal
       : infaqAmount;
 
-  const handlePayZakat = () => {
+  const handleCopyAccount = (accNumber: string, bank: string) => {
+    navigator.clipboard.writeText(accNumber);
+    setCopiedBank(bank);
+    showToast(`Nomor rekening ${bank} (${accNumber}) berhasil disalin!`, 'success');
+    setTimeout(() => setCopiedBank(null), 2000);
+  };
+
+  const handleConfirmZakat = () => {
+    const refNum = `ZIS/${Date.now().toString().slice(-6)}`;
     addDonorRecord({
-      donorName: 'Muzakki Nurul Iman',
-      phone: '081298765432',
+      donorName: muzakkiName || 'Muzakki Nurul Iman',
+      phone: muzakkiPhone || '081298765432',
       campaignId: 'CMP-ZIS',
-      campaignTitle: `Pembayaran ${zakatType.toUpperCase()}`,
+      campaignTitle: `Tunaikan ${zakatType.toUpperCase()}`,
       amount: currentTotal,
       method: 'QRIS'
     });
-    showToast(`Alhamdulillah, pembayaran Zakat/Infaq sebesar Rp ${currentTotal.toLocaleString('id-ID')} berhasil diproses!`, 'success');
+
+    const waText = `*Assalamu'alaikum Warahmatullahi Wabarakatuh*
+
+Yth. Amil ZISWAF DKM *${MASJID_INFO.name}*,
+
+Saya ingin konfirmasi penunaian ZISWAF:
+━━━━━━━━━━━━━━━━━━━━
+• *Nama Muzakki*  : *${muzakkiName || 'Hamba Allah'}*
+• *No. WhatsApp*  : ${muzakkiPhone}
+• *Jenis ZISWAF*  : *${zakatType.toUpperCase()}*
+• *Nominal Bayar* : *Rp ${currentTotal.toLocaleString('id-ID')}*
+• *Metode*        : QRIS Resmi DKM / Transfer BSI
+• *No. Referensi* : ${refNum}
+• *Tanggal*       : ${new Date().toLocaleDateString('id-ID')}
+━━━━━━━━━━━━━━━━━━━━
+
+Mohon untuk diverifikasi dan dicatat pada pembukuan ZISWAF DKM. Syukran.
+
+Wassalamu'alaikum Wr. Wb.`;
+
+    openWhatsAppDirect('081298765432', waText);
+    showToast(`Alhamdulillah, pembayaran ${zakatType.toUpperCase()} dicatat & WhatsApp disiapkan!`, 'success');
   };
 
   return (
@@ -138,35 +174,33 @@ export const ZakatCalculatorPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-4"
             >
-              <div className="bg-amber-500/10 p-4 rounded-2xl border border-amber-400/30 text-xs text-amber-900 dark:text-amber-300 space-y-1">
-                <p className="font-bold flex items-center gap-1.5">
-                  <Scale className="w-4 h-4 text-amber-500" /> Nisab Zakat Mal: 85 Gram Emas (± Rp {nisabGoldValue.toLocaleString('id-ID')})
-                </p>
-                <p>Kadar zakat sebesar 2.5% jika total kepemilikan harta telah mencapai Nisab dan genap 1 Haul (1 tahun kepemilikan).</p>
+              <div className="bg-amber-500/10 p-4 rounded-2xl border border-amber-400/30 text-xs text-amber-800 dark:text-amber-300 space-y-1">
+                <p className="font-bold">Ketentuan Zakat Harta (Mal):</p>
+                <p>Nisab 85 gram emas (± Rp {(85 * goldPrice).toLocaleString('id-ID')}). Haul 1 tahun kepemilikan. Tarif 2.5%.</p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
-                    Tabungan / Deposito / Kas (Rp)
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Tabungan, Deposito, Kas (Rp)
                   </label>
                   <input
                     type="number"
                     value={savingsAmount}
                     onChange={(e) => setSavingsAmount(Number(e.target.value))}
-                    className="w-full px-4 py-2.5 bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm font-mono focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white"
+                    className="w-full px-4 py-2.5 bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm font-mono font-bold focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
-                    Kepemilikan Emas (Gram)
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Simpanan Emas Murni (Gram)
                   </label>
                   <input
                     type="number"
                     value={goldGrams}
                     onChange={(e) => setGoldGrams(Number(e.target.value))}
-                    className="w-full px-4 py-2.5 bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm font-mono focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white"
+                    className="w-full px-4 py-2.5 bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -244,7 +278,7 @@ export const ZakatCalculatorPage: React.FC = () => {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={handlePayZakat}
+            onClick={() => setIsPayModalOpen(true)}
             disabled={currentTotal <= 0}
             className="w-full py-3.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-emerald-950 font-bold text-xs rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50"
           >
@@ -253,6 +287,114 @@ export const ZakatCalculatorPage: React.FC = () => {
           </motion.button>
         </GlassCard>
       </div>
+
+      {/* Direct Payment & QRIS Modal */}
+      <AnimatePresence>
+        {isPayModalOpen && (
+          <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-md p-4 sm:p-6 flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-md w-full shadow-2xl overflow-hidden max-h-[92vh] flex flex-col my-auto"
+            >
+              <div className="bg-slate-900 text-white p-5 flex items-center justify-between shrink-0 border-b border-slate-800">
+                <div>
+                  <h3 className="font-bold text-base text-white">Tunaikan {zakatType.toUpperCase()}</h3>
+                  <p className="text-xs text-amber-300 font-mono font-bold">Total: Rp {currentTotal.toLocaleString('id-ID')}</p>
+                </div>
+                <button
+                  onClick={() => setIsPayModalOpen(false)}
+                  className="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-800 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-4 overflow-y-auto text-xs flex-1">
+                <div className="space-y-3">
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Nama Muzakki / Donatur</label>
+                    <input
+                      type="text"
+                      value={muzakkiName}
+                      onChange={(e) => setMuzakkiName(e.target.value)}
+                      className="w-full px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-900 dark:text-white outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Nomor WhatsApp</label>
+                    <input
+                      type="text"
+                      value={muzakkiPhone}
+                      onChange={(e) => setMuzakkiPhone(e.target.value)}
+                      className="w-full px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-mono text-slate-900 dark:text-white outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* QRIS Direct Box */}
+                <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-2xl border border-amber-400/40 text-center space-y-2">
+                  <div className="text-xs font-bold text-amber-900 dark:text-amber-300">
+                    Scan QRIS Resmi {MASJID_INFO.name}
+                  </div>
+                  <div className="bg-white p-3 rounded-2xl w-36 h-36 mx-auto flex items-center justify-center border shadow-md">
+                    <QrCode className="w-28 h-28 text-slate-900" />
+                  </div>
+                  <p className="text-[10px] text-slate-500">NMID: ID1024398291048 • Bebas Biaya Admin</p>
+                </div>
+
+                {/* BSI Account Option */}
+                <div className="bg-slate-100/90 dark:bg-slate-800/90 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                  <div>
+                    <div className="text-[10px] text-slate-400">Atau Transfer Bank BSI:</div>
+                    <div className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">718-293-8472</div>
+                    <div className="text-[10px] text-slate-500">a.n. DKM Masjid Jami Nurul Iman</div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyAccount('7182938472', 'BSI')}
+                    className="px-3 py-1.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold border transition-all"
+                  >
+                    {copiedBank === 'BSI' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+
+                {/* Actions */}
+                <div className="space-y-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={handleConfirmZakat}
+                    className="w-full py-3 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold rounded-2xl text-xs shadow-md flex items-center justify-center gap-2 transition-all"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>Kirim Konfirmasi WA ke Amil DKM</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      printOfficialReceipt({
+                        refNumber: `ZIS/${Date.now().toString().slice(-6)}`,
+                        donorName: muzakkiName || 'Hamba Allah',
+                        amount: currentTotal,
+                        category: `Pembayaran ${zakatType.toUpperCase()}`,
+                        date: new Date().toISOString().slice(0, 10),
+                        recordedBy: 'Amil ZISWAF DKM'
+                      });
+                    }}
+                    className="w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl text-xs flex items-center justify-center gap-2 transition-all"
+                  >
+                    <Printer className="w-4 h-4" />
+                    <span>Cetak Kwitansi ZISWAF Sah</span>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -24,7 +24,8 @@ import {
   ROOM_BOOKINGS,
   OFFICIAL_LETTERS,
   AUDIT_LOGS,
-  KAJIAN_EVENTS
+  KAJIAN_EVENTS,
+  CMS_ARTICLES
 } from '../data/mockData';
 import {
   fetchAllDashboardData,
@@ -99,6 +100,13 @@ interface AppContextType {
 
   kajianEvents: KajianEvent[];
   addKajianEvent: (event: Omit<KajianEvent, 'id'>) => void;
+  
+  // CMS Articles
+  articles: CMSArticle[];
+  addArticle: (art: Omit<CMSArticle, 'id' | 'views'>) => void;
+  updateArticle: (id: string, art: Partial<CMSArticle>) => void;
+  deleteArticle: (id: string) => void;
+  togglePublishArticle: (id: string) => void;
   
   // Toasts
   toasts: ToastNotification[];
@@ -212,6 +220,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [letters, setLetters] = useState<OfficialLetter[]>(OFFICIAL_LETTERS);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>(AUDIT_LOGS);
   const [kajianEvents, setKajianEvents] = useState<KajianEvent[]>(KAJIAN_EVENTS);
+  const [articles, setArticles] = useState<CMSArticle[]>(() => loadFromStorage('articles', CMS_ARTICLES));
 
   // Hydrate dashboard data from the API whenever the user is authenticated
   // (covers both a fresh login and a page reload with an existing token).
@@ -263,6 +272,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => { localStorage.setItem('dkm_letters', JSON.stringify(letters)); }, [letters]);
   useEffect(() => { localStorage.setItem('dkm_auditLogs', JSON.stringify(auditLogs)); }, [auditLogs]);
   useEffect(() => { localStorage.setItem('dkm_kajianEvents', JSON.stringify(kajianEvents)); }, [kajianEvents]);
+  useEffect(() => { localStorage.setItem('dkm_articles', JSON.stringify(articles)); }, [articles]);
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -451,6 +461,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast(`Agenda Kajian "${event.title}" berhasil dipublikasikan!`, 'success');
   };
 
+  const addArticle = (art: Omit<CMSArticle, 'id' | 'views'>) => {
+    const id = 'ART-' + String(articles.length + 1).padStart(2, '0');
+    const newArt: CMSArticle = { ...art, id, views: 1 };
+    setArticles((prev) => [newArt, ...prev]);
+    addAuditLog('CREATE_ARTICLE', 'Website CMS', `Mempublikasikan artikel baru: ${art.title}`);
+    showToast(`Artikel "${art.title}" berhasil disimpan & dipublikasikan!`, 'success');
+  };
+
+  const updateArticle = (id: string, artData: Partial<CMSArticle>) => {
+    setArticles((prev) => prev.map((a) => (a.id === id ? { ...a, ...artData } : a)));
+    addAuditLog('UPDATE_ARTICLE', 'Website CMS', `Memperbarui artikel ID: ${id}`);
+    showToast('Perubahan artikel berhasil disimpan!', 'success');
+  };
+
+  const deleteArticle = (id: string) => {
+    const target = articles.find((a) => a.id === id);
+    setArticles((prev) => prev.filter((a) => a.id !== id));
+    addAuditLog('DELETE_ARTICLE', 'Website CMS', `Menghapus artikel: ${target?.title || id}`);
+    showToast('Artikel berhasil dihapus dari daftar website.', 'info');
+  };
+
+  const togglePublishArticle = (id: string) => {
+    setArticles((prev) =>
+      prev.map((a) => {
+        if (a.id === id) {
+          const nextState = !a.isPublished;
+          addAuditLog('TOGGLE_PUBLISH', 'Website CMS', `Mengubah status publikasi artikel "${a.title}" menjadi ${nextState ? 'Published' : 'Draft'}`);
+          showToast(`Status artikel diubah menjadi: ${nextState ? 'Diterbitkan' : 'Draft'}`, 'info');
+          return { ...a, isPublished: nextState };
+        }
+        return a;
+      })
+    );
+  };
+
   const openExportModal = (title: string, data: any[]) => {
     setExportModalData({ isOpen: true, title, data });
   };
@@ -500,6 +545,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addAuditLog,
         kajianEvents,
         addKajianEvent,
+        articles,
+        addArticle,
+        updateArticle,
+        deleteArticle,
+        togglePublishArticle,
         runningText,
         setRunningText,
         toasts,

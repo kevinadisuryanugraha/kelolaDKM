@@ -16,7 +16,9 @@ class RoomBookingTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $user = User::factory()->create();
+        $this->seed(\Database\Seeders\RoleSeeder::class);
+        $user = User::factory()->create(['role' => 'super_admin']);
+        $user->assignRole('super_admin');
         $this->token = $user->createToken('test')->plainTextToken;
     }
 

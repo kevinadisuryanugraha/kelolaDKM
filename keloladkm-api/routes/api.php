@@ -35,37 +35,49 @@ Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 
 // ── Protected (auth:sanctum) ──
 Route::middleware('auth:sanctum')->group(function () {
-    // Financial
-    Route::apiResource('financial-transactions', FinancialTransactionController::class);
-    Route::apiResource('financial-accounts', FinancialAccountController::class);
-    Route::apiResource('budget-plans', BudgetPlanController::class);
+    // 1. Financial & Budgets
+    Route::middleware('role:super_admin|ketua_dkm|wakil_ketua|bendahara|admin_keuangan')->group(function () {
+        Route::apiResource('financial-transactions', FinancialTransactionController::class);
+        Route::apiResource('financial-accounts', FinancialAccountController::class);
+        Route::apiResource('budget-plans', BudgetPlanController::class);
+    });
 
-    // Donations & ZISWAF
-    Route::apiResource('donation-campaigns', DonationCampaignController::class)->except(['index']);
-    Route::apiResource('donor-records', DonorRecordController::class);
-    Route::apiResource('qurban-participants', QurbanParticipantController::class);
-    Route::patch('qurban-participants/{participant}/toggle-distributed', [QurbanParticipantController::class, 'toggleDistributed']);
+    // 2. Donations & ZISWAF
+    Route::middleware('role:super_admin|bendahara|admin_keuangan|relawan')->group(function () {
+        Route::apiResource('donation-campaigns', DonationCampaignController::class)->except(['index']);
+        Route::apiResource('donor-records', DonorRecordController::class);
+        Route::apiResource('qurban-participants', QurbanParticipantController::class);
+        Route::patch('qurban-participants/{participant}/toggle-distributed', [QurbanParticipantController::class, 'toggleDistributed']);
+    });
 
-    // Inventory
-    Route::apiResource('inventory-items', InventoryItemController::class);
+    // 3. Inventory & Facilities (Sarpras)
+    Route::middleware('role:super_admin|admin_inventaris')->group(function () {
+        Route::apiResource('inventory-items', InventoryItemController::class);
+        Route::apiResource('room-bookings', RoomBookingController::class);
+    });
 
-    // Room bookings (Sarpras)
-    Route::apiResource('room-bookings', RoomBookingController::class);
+    // 4. Agenda & Events
+    Route::middleware('role:super_admin|sekretaris|ketua_dkm|wakil_ketua|imam_muadzin')->group(function () {
+        Route::apiResource('kajian-events', KajianEventController::class)->except(['index']);
+    });
 
-    // Agenda
-    Route::apiResource('kajian-events', KajianEventController::class)->except(['index']);
+    // 5. Letters & Official Documents
+    Route::middleware('role:super_admin|sekretaris|ketua_dkm|wakil_ketua')->group(function () {
+        Route::apiResource('official-letters', OfficialLetterController::class);
+    });
 
-    // Letters & Documents
-    Route::apiResource('official-letters', OfficialLetterController::class);
+    // 6. Website CMS Articles (Create, Update, Delete)
+    Route::middleware('role:super_admin|sekretaris')->group(function () {
+        Route::apiResource('cms-articles', CMSArticleController::class)->except(['index', 'show']);
+    });
 
-    // CMS
-    Route::apiResource('cms-articles', CMSArticleController::class)->except(['index', 'show']);
+    // 7. Audit Log (Read-only)
+    Route::middleware('role:super_admin|ketua_dkm|wakil_ketua')->group(function () {
+        Route::get('audit-logs', [AuditLogController::class, 'index']);
+        Route::get('audit-logs/{log}', [AuditLogController::class, 'show']);
+    });
 
-    // Audit Log (read-only)
-    Route::get('audit-logs', [AuditLogController::class, 'index']);
-    Route::get('audit-logs/{log}', [AuditLogController::class, 'show']);
-
-    // Dashboard overview
+    // 8. General Dashboard overview (accessible by any authenticated user)
     Route::get('dashboard/overview', function () {
         return response()->json([
             'success' => true,

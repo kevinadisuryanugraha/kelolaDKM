@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { Search, MapPin, MessageCircle } from 'lucide-react';
 import { PageHeader } from '../common/PageHeader';
 import { GlassCard } from '../common/GlassCard';
+import { Avatar } from '../common/Avatar';
 
 export const KajianSchedulePage: React.FC = () => {
   const { kajianEvents, showToast } = useApp();
@@ -89,13 +90,12 @@ export const KajianSchedulePage: React.FC = () => {
               </h3>
 
               <div className="flex items-center gap-3 bg-slate-100/60 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
-                {item.speakerAvatar && (
-                  <img
-                    src={item.speakerAvatar}
-                    alt={item.speaker}
-                    className="w-12 h-12 rounded-2xl object-cover border-2 border-emerald-500/40 shrink-0 shadow-sm"
-                  />
-                )}
+                <Avatar
+                  src={item.speakerAvatar}
+                  name={item.speaker}
+                  size="md"
+                  className="w-12 h-12 text-sm rounded-2xl border-2 border-emerald-500/40 shrink-0 shadow-sm"
+                />
                 <div>
                   <div className="text-xs font-bold text-slate-900 dark:text-white">{item.speaker}</div>
                   <div className="text-[11px] text-slate-500 font-medium">{item.speakerTitle}</div>

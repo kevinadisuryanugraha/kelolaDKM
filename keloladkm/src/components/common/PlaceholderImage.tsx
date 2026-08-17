@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '../../lib/utils';
 
 interface PlaceholderImageProps {
-  category: 'Renovasi' | 'Operasional' | 'Social/Yatim' | 'Qurban' | 'Wakaf';
+  category: string;
   title: string;
   className?: string;
 }
@@ -28,28 +28,43 @@ const categoryConfig: Record<string, { gradient: string; icon: string }> = {
     gradient: 'from-violet-800 via-violet-700 to-purple-800',
     icon: '🏛️',
   },
+  Dakwah: {
+    gradient: 'from-emerald-800 via-teal-700 to-cyan-800',
+    icon: '📖',
+  },
+  Pengumuman: {
+    gradient: 'from-indigo-800 via-blue-700 to-slate-800',
+    icon: '📢',
+  },
+  Kegiatan: {
+    gradient: 'from-teal-800 via-emerald-700 to-emerald-900',
+    icon: '🕌',
+  },
+  Sosial: {
+    gradient: 'from-amber-800 via-orange-700 to-amber-900',
+    icon: '🤝',
+  },
 };
 
 /** 
- * Campaign placeholder image — themed gradient with category icon.
- * Ganti dengan foto asli di data/mockData.ts (field imageUrl).
+ * Universal placeholder image — themed gradient with category icon.
  */
 export const PlaceholderImage: React.FC<PlaceholderImageProps> = ({ category, title, className }) => {
-  const config = categoryConfig[category] || categoryConfig.Operasional;
+  const config = categoryConfig[category] || categoryConfig.Dakwah || categoryConfig.Operasional;
 
   return (
     <div
       className={cn(
-        'w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br',
+        'w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br select-none',
         config.gradient,
         className
       )}
     >
-      <span className="text-4xl mb-3 opacity-80">{config.icon}</span>
-      <span className="text-white/80 text-[10px] font-semibold uppercase tracking-wider mb-1">
+      <span className="text-4xl mb-2.5 opacity-90 drop-shadow">{config.icon}</span>
+      <span className="text-white/80 text-[10px] font-bold uppercase tracking-wider mb-1 px-2.5 py-0.5 rounded-full bg-black/20 backdrop-blur-xs">
         {category}
       </span>
-      <span className="text-white text-xs font-medium leading-tight line-clamp-3 max-w-[200px]">
+      <span className="text-white text-xs font-semibold leading-snug line-clamp-2 max-w-[220px] drop-shadow-xs">
         {title}
       </span>
     </div>

@@ -8,6 +8,8 @@ import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { ToastContainer } from './components/common/ToastContainer';
 import { I18nProvider } from './i18n/I18nContext';
 
+import { MobileBottomBar } from './components/common/MobileBottomBar';
+
 // Public Pages — lazy loaded
 const PublicHome = lazy(() => import('./components/public/PublicHome').then(m => ({ default: m.PublicHome })));
 const AboutSection = lazy(() => import('./components/public/AboutSection').then(m => ({ default: m.AboutSection })));
@@ -95,7 +97,7 @@ const MainAppContent: React.FC = () => {
       {activeAppTab === 'public' && <HeaderNavbar />}
 
       {activeAppTab === 'public' ? (
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 lg:pb-8">
           <Suspense fallback={<PageFallback label="Halaman" />}>
             {publicSubTab === 'home' && <PublicHome />}
             {publicSubTab === 'about' && <AboutSection />}
@@ -119,6 +121,7 @@ const MainAppContent: React.FC = () => {
       )}
 
       {activeAppTab === 'public' && <Footer />}
+      {activeAppTab === 'public' && <MobileBottomBar />}
       {exportModalData.isOpen && <ExportModal />}
     </div>
   );

@@ -69,10 +69,10 @@ const PrayerWidget: React.FC<{ upcoming: ReturnType<typeof getUpcomingPrayer> }>
         </div>
         <p className="text-[11px] text-slate-400 mt-1">Hitung mundur otomatis waktu adhan wilayah Pejaten Timur</p>
       </div>
-      <div className="grid grid-cols-6 gap-1 pt-1 text-center">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 sm:gap-1 pt-1 text-center">
         {TODAY_PRAYER_TIMES.map((p) => (
-          <div key={p.name} className={`p-1.5 rounded-xl border text-[11px] ${p.name === upcoming.name ? 'bg-emerald-900/60 border-emerald-600 text-emerald-300 font-bold' : 'bg-slate-900 border-slate-800 text-slate-400'}`}>
-            <div className="text-[10px] text-slate-400">{p.name}</div>
+          <div key={p.name} className={`p-1.5 sm:p-2 rounded-xl border text-[11px] ${p.name === upcoming.name ? 'bg-emerald-900/60 border-emerald-600 text-emerald-300 font-bold' : 'bg-slate-900 border-slate-800 text-slate-400'}`}>
+            <div className="text-[10px] text-slate-400 truncate">{p.name}</div>
             <div className="font-mono text-xs font-semibold mt-0.5">{p.time}</div>
           </div>
         ))}
@@ -211,7 +211,7 @@ const FeaturedCampaign: React.FC = () => {
           </motion.button>
         </div>
         <div className="lg:col-span-5">
-          {featured.imageUrl ? (
+          {featured.imageUrl && featured.imageUrl.trim() !== '' ? (
             <img src={featured.imageUrl} alt={featured.title} className="w-full h-64 object-cover rounded-2xl border border-slate-800 shadow-xl" />
           ) : (
             <PlaceholderImage category={featured.category} title={featured.title} className="rounded-2xl h-64" />
@@ -252,14 +252,14 @@ export const PublicHome: React.FC = () => {
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
               Mewujudkan kemakmuran masjid yang modern, transparan, dan inklusif. Melayani seluruh jamaah Pejaten Timur melalui kegiatan ibadah, pengelolaan ZISWAF, program sosial, dan pemberdayaan ekonomi syariah.
             </p>
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setPublicSubTab('donation')} className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md flex items-center gap-2 transition-all">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 pt-2">
+              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setPublicSubTab('donation')} className="px-5 sm:px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition-all">
                 <Heart className="w-4 h-4 fill-white" /> Donasi / Infaq Online
               </motion.button>
-              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setPublicSubTab('prayer_times')} className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-sm border border-slate-700 flex items-center gap-2 transition-all">
+              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setPublicSubTab('prayer_times')} className="px-5 sm:px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-xs sm:text-sm border border-slate-700 flex items-center justify-center gap-2 transition-all">
                 <Clock className="w-4 h-4 text-amber-400" /> Jadwal Sholat
               </motion.button>
-              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setPublicSubTab('financial_report')} className="px-6 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-emerald-400 font-semibold text-sm border border-slate-700 flex items-center gap-2 transition-all">
+              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setPublicSubTab('financial_report')} className="px-5 sm:px-6 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-emerald-400 font-semibold text-xs sm:text-sm border border-slate-700 flex items-center justify-center gap-2 transition-all">
                 <TrendingUp className="w-4 h-4 text-emerald-400" /> Kas Transparan
               </motion.button>
             </div>

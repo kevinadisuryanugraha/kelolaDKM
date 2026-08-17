@@ -16,7 +16,9 @@ class CrudTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $user = User::factory()->create();
+        $this->seed(\Database\Seeders\RoleSeeder::class);
+        $user = User::factory()->create(['role' => 'super_admin']);
+        $user->assignRole('super_admin');
         $this->token = $user->createToken('test')->plainTextToken;
     }
 
@@ -130,5 +132,27 @@ class CrudTest extends TestCase
             $r1->json('data.ref_number'),
             $r2->json('data.ref_number')
         );
+    }
+
+    public function test_unauthorized_role_gets_403(): void
+    {
+        $viewer = User::factory()->create(['role' => 'viewer']);
+        $viewer->assignRole('viewer');
+        $viewerToken = $viewer->createToken('viewer-test')->plainTextToken;
+
+        $response = $this->withToken($viewerToken)
+            ->postJson('/api/financial-transactions', [
+                'date' => '2026-07-27',
+                'type' => 'Masuk',
+                'account_code' => '401.1',
+                'account_name' => 'Infaq',
+                'description' => 'Unauthorized attempt',
+                'amount' => 100000,
+                'category' => 'Infaq',
+                'recorded_by' => 'Viewer',
+            ]);
+
+        $response->assertStatus(403)
+            ->assertJsonPath('success', false);
     }
 }

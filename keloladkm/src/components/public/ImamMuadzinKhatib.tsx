@@ -4,6 +4,7 @@ import { IMAM_MUADZIN_LIST } from '../../data/mockData';
 import { Calendar, BookOpen, Award } from 'lucide-react';
 import { PageHeader } from '../common/PageHeader';
 import { GlassCard } from '../common/GlassCard';
+import { Avatar } from '../common/Avatar';
 
 export const ImamMuadzinKhatib: React.FC = () => {
   return (
@@ -29,10 +30,11 @@ export const ImamMuadzinKhatib: React.FC = () => {
           >
             <div className="space-y-4 text-center">
               <div className="relative inline-block">
-                <img
+                <Avatar
                   src={item.photoUrl}
-                  alt={item.name}
-                  className="w-32 h-32 rounded-3xl object-cover mx-auto border-2 border-emerald-500/40 shadow-xl"
+                  name={item.name}
+                  size="2xl"
+                  className="w-28 h-28 text-2xl font-bold rounded-3xl mx-auto border-2 border-emerald-500/40 shadow-xl"
                 />
                 <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-amber-400 text-emerald-950 font-bold text-[10px] uppercase tracking-wider rounded-full shadow-md whitespace-nowrap">
                   {item.role}

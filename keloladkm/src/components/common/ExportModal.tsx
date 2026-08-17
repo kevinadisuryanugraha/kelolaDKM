@@ -4,6 +4,8 @@ import { useI18n } from '../../i18n/I18nContext';
 import { X, Download, FileText, Table as TableIcon, Printer, CheckCircle } from 'lucide-react';
 import { DataTable, DataTableColumn } from './DataTable';
 
+import { printOfficialDocument, downloadExcelCsv } from '../../utils/exportOfficialDoc';
+
 export const ExportModal: React.FC = () => {
   const { exportModalData, closeExportModal, showToast } = useApp();
   const { t } = useI18n();
@@ -16,11 +18,26 @@ export const ExportModal: React.FC = () => {
 
   const handleDownload = () => {
     setIsExporting(true);
+
     setTimeout(() => {
-      setIsExporting(false);
-      showToast(`Dokumen ${title} berhasil di-export dalam format ${exportFormat.toUpperCase()}`, 'success');
-      closeExportModal();
-    }, 1200);
+      try {
+        if (exportFormat === 'pdf' || exportFormat === 'print') {
+          printOfficialDocument({
+            title: title || 'Laporan Resmi DKM',
+            period: new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(new Date()),
+            data: data || [],
+          });
+        } else if (exportFormat === 'excel' || exportFormat === 'csv') {
+          downloadExcelCsv(title || 'Laporan_DKM', data || []);
+        }
+        showToast(`Dokumen ${title} berhasil disiapkan dalam format ${exportFormat.toUpperCase()}`, 'success');
+      } catch (err) {
+        showToast('Gagal memproses dokumen export', 'error');
+      } finally {
+        setIsExporting(false);
+        closeExportModal();
+      }
+    }, 600);
   };
 
   const keys = data.length > 0 ? Object.keys(data[0]).slice(0, 5) : [];
@@ -144,17 +161,17 @@ export const ExportModal: React.FC = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="bg-slate-50 dark:bg-slate-800/50 p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
+        <div className="bg-slate-50 dark:bg-slate-800/50 p-4 border-t border-slate-200 dark:border-slate-800 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3">
           <button
             onClick={closeExportModal}
-            className="px-4 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-center"
           >
             {t('exportModal.cancel')}
           </button>
           <button
             onClick={handleDownload}
             disabled={isExporting}
-            className="px-5 py-2 rounded-xl text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white flex items-center gap-2 shadow-md hover:shadow-emerald-700/20 transition-all disabled:opacity-50"
+            className="px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white flex items-center justify-center gap-2 shadow-md hover:shadow-emerald-700/20 transition-all disabled:opacity-50"
           >
             {isExporting ? (
               <>

@@ -3,45 +3,89 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useApp } from '../../context/AppContext';
 import { MASJID_INFO } from '../../data/mockData';
 import { DonationCampaign } from '../../types';
-import { Heart, QrCode, Upload, CheckCircle2, X } from 'lucide-react';
+import { Heart, QrCode, Upload, CheckCircle2, X, Copy, Check, MessageSquare, Download, Printer, ShieldCheck } from 'lucide-react';
 import { PageHeader } from '../common/PageHeader';
 import { GlassCard } from '../common/GlassCard';
 import { PlaceholderImage } from '../common/PlaceholderImage';
+import { openWhatsAppDirect, formatWhatsAppMessage } from '../../utils/whatsappGateway';
+import { printOfficialReceipt } from '../../utils/exportOfficialDoc';
 
 export const DonationPublicPage: React.FC = () => {
-  const { campaigns, addDonorRecord } = useApp();
+  const { campaigns, addDonorRecord, showToast } = useApp();
 
   const [selectedCampaign, setSelectedCampaign] = useState<DonationCampaign | null>(null);
   const [donorName, setDonorName] = useState<string>('');
   const [donorPhone, setDonorPhone] = useState<string>('');
   const [donorEmail, setDonorEmail] = useState<string>('');
   const [amount, setAmount] = useState<number>(100000);
-  const [paymentMethod, setPaymentMethod] = useState<'QRIS' | 'Transfer BSI' | 'Transfer Mandiri'>('QRIS');
+  const [paymentMethod, setPaymentMethod] = useState<'QRIS' | 'Transfer BSI' | 'Transfer Muamalat'>('QRIS');
   const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
   const [proofFileName, setProofFileName] = useState<string>('');
+  const [copiedBank, setCopiedBank] = useState<string | null>(null);
+
+  // Success Step State
+  const [isSuccessModal, setIsSuccessModal] = useState<boolean>(false);
+  const [submittedDonation, setSubmittedDonation] = useState<any>(null);
+
+  const handleCopyAccount = (accNumber: string, bank: string) => {
+    navigator.clipboard.writeText(accNumber);
+    setCopiedBank(bank);
+    showToast(`Nomor rekening ${bank} (${accNumber}) berhasil disalin!`, 'success');
+    setTimeout(() => setCopiedBank(null), 2000);
+  };
 
   const handleDonateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCampaign) return;
 
-    addDonorRecord({
-      donorName: isAnonymous ? 'Hamba Allah' : donorName || 'Hamba Allah',
-      phone: donorPhone || '081234567890',
+    const refNum = `REC/${Date.now().toString().slice(-6)}`;
+    const effectiveName = isAnonymous ? 'Hamba Allah' : donorName.trim() || 'Hamba Allah';
+
+    const donationData = {
+      id: refNum,
+      donorName: effectiveName,
+      phone: donorPhone || '081298765432',
       email: donorEmail,
       campaignId: selectedCampaign.id,
       campaignTitle: selectedCampaign.title,
       amount: Number(amount),
       method: paymentMethod,
       isAnonymous,
+      date: new Date().toISOString().slice(0, 10),
+      status: 'Pending' as const,
       proofUrl: proofFileName ? 'uploaded_proof.jpg' : undefined
-    });
+    };
 
-    // Reset Form
+    addDonorRecord(donationData);
+    setSubmittedDonation(donationData);
+    setIsSuccessModal(true);
     setSelectedCampaign(null);
-    setDonorName('');
-    setDonorPhone('');
-    setAmount(100000);
-    setProofFileName('');
+  };
+
+  const handleSendConfirmationWA = () => {
+    if (!submittedDonation) return;
+
+    const waText = `*Assalamu'alaikum Warahmatullahi Wabarakatuh*
+
+Yth. Bendahara DKM *${MASJID_INFO.name}*,
+
+Saya ingin konfirmasi penyaluran donasi/infaq online:
+━━━━━━━━━━━━━━━━━━━━
+• *Nama Donatur* : *${submittedDonation.donorName}*
+• *No. WhatsApp* : ${submittedDonation.phone}
+• *Program*      : ${submittedDonation.campaignTitle}
+• *Nominal*      : *Rp ${submittedDonation.amount.toLocaleString('id-ID')}*
+• *Metode*       : ${submittedDonation.method}
+• *Tanggal*      : ${new Date().toLocaleDateString('id-ID')}
+• *No. Referensi*: ${submittedDonation.id}
+━━━━━━━━━━━━━━━━━━━━
+
+Mohon untuk diverifikasi dan dicatat pada pembukuan kas DKM. Terima kasih.
+
+Wassalamu'alaikum Wr. Wb.`;
+
+    openWhatsAppDirect('081298765432', waText);
+    showToast('Membuka WhatsApp untuk mengirim bukti konfirmasi donasi ke Bendahara', 'info');
   };
 
   return (
@@ -51,6 +95,25 @@ export const DonationPublicPage: React.FC = () => {
         titleKey="pages.donation.title"
         subtitleKey="pages.donation.subtitle"
       />
+
+      {/* Direct Payment Guide Banner */}
+      <div className="bg-gradient-to-r from-emerald-900 to-slate-900 text-white rounded-3xl p-6 border border-emerald-700/40 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-400/20 text-amber-300 rounded-lg text-xs font-bold border border-amber-400/30">
+            <ShieldCheck className="w-4 h-4 text-amber-400" /> Donasi Langsung Bebas Potongan Pihak Ketiga (100% Masuk Kas Masjid)
+          </div>
+          <h3 className="text-xl font-bold">Salurkan Infaq, Zakat & Wakaf via QRIS Resmi atau Transfer BSI</h3>
+          <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
+            Seluruh transaksi donasi tercatat transparan dan langsung diverifikasi oleh Bendahara DKM {MASJID_INFO.name}.
+          </p>
+        </div>
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="bg-white p-2.5 rounded-2xl shadow-lg border border-emerald-500/30 text-center">
+            <QrCode className="w-16 h-16 text-slate-900 mx-auto" />
+            <span className="text-[10px] font-bold text-slate-700 block mt-1">QRIS Standar BI</span>
+          </div>
+        </div>
+      </div>
 
       {/* Campaigns Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -67,7 +130,7 @@ export const DonationPublicPage: React.FC = () => {
             >
               <div className="space-y-4">
                 <div className="relative h-48 overflow-hidden rounded-t-2xl">
-                  {cmp.imageUrl ? (
+                  {cmp.imageUrl && cmp.imageUrl.trim() !== '' ? (
                     <img
                       src={cmp.imageUrl}
                       alt={cmp.title}
@@ -136,18 +199,18 @@ export const DonationPublicPage: React.FC = () => {
       {/* Donation Form Modal */}
       <AnimatePresence>
         {selectedCampaign && (
-          <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-md p-4 sm:p-6 flex items-center justify-center">
+          <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-md p-4 sm:p-6 flex items-center justify-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-lg w-full shadow-2xl overflow-hidden max-h-[90vh] flex flex-col my-auto"
+              className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-xl w-full shadow-2xl overflow-hidden max-h-[92vh] flex flex-col my-auto"
             >
               {/* Sticky Header */}
               <div className="bg-slate-900 text-white p-5 flex items-center justify-between shrink-0 border-b border-slate-800">
                 <div>
                   <h3 className="font-bold text-base text-white">Form Infaq / Donasi Online</h3>
-                  <p className="text-xs text-slate-300 truncate max-w-xs">{selectedCampaign.title}</p>
+                  <p className="text-xs text-emerald-400 font-medium truncate max-w-xs">{selectedCampaign.title}</p>
                 </div>
                 <button
                   onClick={() => setSelectedCampaign(null)}
@@ -158,19 +221,19 @@ export const DonationPublicPage: React.FC = () => {
               </div>
 
               {/* Scrollable Form Body */}
-              <form onSubmit={handleDonateSubmit} className="p-6 space-y-4 overflow-y-auto flex-1">
+              <form onSubmit={handleDonateSubmit} className="p-6 space-y-4 overflow-y-auto flex-1 text-xs">
                 {/* Quick Nominal Options */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-2">
                     Pilih Nominal Donasi (Rp)
                   </label>
                   <div className="grid grid-cols-3 gap-2">
-                    {[50000, 100000, 250000, 500000, 1000000, 2500000].map((nom) => (
+                    {[25000, 50000, 100000, 250000, 500000, 1000000].map((nom) => (
                       <button
                         type="button"
                         key={nom}
                         onClick={() => setAmount(nom)}
-                        className={`py-2 rounded-xl text-xs font-bold border transition-all ${
+                        className={`py-2.5 rounded-xl text-xs font-bold border transition-all ${
                           amount === nom
                             ? 'border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 ring-2 ring-emerald-500'
                             : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200'
@@ -184,7 +247,7 @@ export const DonationPublicPage: React.FC = () => {
 
                 {/* Custom Amount Input */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                  <label className="block font-semibold text-slate-600 dark:text-slate-400 mb-1">
                     Atau Masukkan Nominal Lain (Rp)
                   </label>
                   <input
@@ -200,7 +263,7 @@ export const DonationPublicPage: React.FC = () => {
                 {/* Donor Info */}
                 <div className="space-y-3 pt-1">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                    <label className="block font-semibold text-slate-600 dark:text-slate-400 mb-1">
                       Nama Lengkap Donatur
                     </label>
                     <input
@@ -209,7 +272,7 @@ export const DonationPublicPage: React.FC = () => {
                       disabled={isAnonymous}
                       value={donorName}
                       onChange={(e) => setDonorName(e.target.value)}
-                      className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 outline-none disabled:opacity-50 text-slate-900 dark:text-white"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 outline-none disabled:opacity-50 text-slate-900 dark:text-white"
                     />
                   </div>
 
@@ -221,42 +284,42 @@ export const DonationPublicPage: React.FC = () => {
                       onChange={(e) => setIsAnonymous(e.target.checked)}
                       className="w-4 h-4 text-emerald-600 rounded"
                     />
-                    <label htmlFor="anon" className="text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
+                    <label htmlFor="anon" className="text-xs text-slate-600 dark:text-slate-400 cursor-pointer font-medium">
                       Sembunyikan nama saya (Donasi sebagai Hamba Allah)
                     </label>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                      Nomor WhatsApp (untuk bukti tanda terima)
+                    <label className="block font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                      Nomor WhatsApp (untuk konfirmasi & kwitansi)
                     </label>
                     <input
                       type="text"
                       placeholder="0812xxxxxxxx"
                       value={donorPhone}
                       onChange={(e) => setDonorPhone(e.target.value)}
-                      className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 dark:text-white font-mono"
                       required
                     />
                   </div>
                 </div>
 
-                {/* Payment Method Selector */}
-                <div className="pt-1 space-y-2">
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                    Metode Pembayaran
+                {/* Direct Payment Channel Selector */}
+                <div className="pt-2 space-y-2">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300">
+                    Pilih Metode Donasi Bebas Admin
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {[
-                      { id: 'QRIS', label: 'QRIS Instant' },
-                      { id: 'Transfer BSI', label: 'Transfer BSI' },
-                      { id: 'Transfer Mandiri', label: 'Mandiri Syariah' }
+                      { id: 'QRIS', label: '📱 QRIS Resmi' },
+                      { id: 'Transfer BSI', label: '🏦 Transfer BSI' },
+                      { id: 'Transfer Muamalat', label: '🏦 Bank Muamalat' }
                     ].map((m) => (
                       <button
                         type="button"
                         key={m.id}
                         onClick={() => setPaymentMethod(m.id as any)}
-                        className={`p-2.5 rounded-xl border text-xs font-semibold text-center transition-all ${
+                        className={`p-2.5 rounded-xl border text-xs font-bold text-center transition-all ${
                           paymentMethod === m.id
                             ? 'border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 ring-2 ring-emerald-500'
                             : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 text-slate-800 dark:text-slate-200'
@@ -268,63 +331,145 @@ export const DonationPublicPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* QRIS / Bank Details */}
+                {/* Method Display Card */}
                 {paymentMethod === 'QRIS' ? (
-                  <div className="bg-amber-500/10 p-4 rounded-2xl border border-amber-400/40 text-center space-y-2">
-                    <div className="text-xs font-bold text-amber-800 dark:text-amber-300">
-                      Scan Kode QRIS {MASJID_INFO.qrisMerchantName}
+                  <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-2xl border border-amber-400/40 text-center space-y-3">
+                    <div className="text-xs font-bold text-amber-900 dark:text-amber-300">
+                      Scan QRIS Resmi {MASJID_INFO.name}
                     </div>
-                    <div className="bg-white p-3 rounded-2xl w-36 h-36 mx-auto flex items-center justify-center border shadow-md">
-                      <QrCode className="w-28 h-28 text-slate-900" />
+                    <div className="bg-white p-3 rounded-2xl w-40 h-40 mx-auto flex items-center justify-center border shadow-md">
+                      <QrCode className="w-32 h-32 text-slate-900" />
                     </div>
-                    <p className="text-[10px] text-amber-700 dark:text-amber-400">
-                      NMID: {MASJID_INFO.qrisNMID} • Bebas Biaya Admin
-                    </p>
+                    <div className="text-[11px] text-slate-600 dark:text-slate-300 space-y-0.5">
+                      <p className="font-semibold">NMID: <span className="font-mono font-bold text-slate-900 dark:text-white">ID1024398291048</span></p>
+                      <p className="text-[10px] text-slate-500">Mendukung: BSI Mobile, BCA Mobile, Livin, GoPay, OVO, ShopeePay, DANA</p>
+                    </div>
                   </div>
                 ) : (
-                  <div className="bg-slate-100/80 dark:bg-slate-800/80 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs space-y-1">
-                    <p className="font-bold text-slate-800 dark:text-slate-200">Transfer Rekening DKM:</p>
-                    <p className="font-mono text-emerald-600 dark:text-emerald-400 font-bold text-sm">
-                      {paymentMethod === 'Transfer BSI' ? '711-2233-445 (BSI)' : '127-000-889912-3 (Mandiri)'}
-                    </p>
-                    <p className="text-[11px] text-slate-500">Atas Nama: {MASJID_INFO.bankAccounts[0].accountName}</p>
+                  <div className="bg-slate-100/90 dark:bg-slate-800/90 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-700 dark:text-slate-300">
+                        {paymentMethod === 'Transfer BSI' ? 'Bank Syariah Indonesia (BSI)' : 'Bank Muamalat Indonesia'}
+                      </span>
+                      <span className="text-[10px] bg-emerald-500/10 text-emerald-600 font-bold px-2 py-0.5 rounded-md">Bebas Potongan</span>
+                    </div>
+                    <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                      <div>
+                        <div className="text-[10px] text-slate-400">Nomor Rekening Resmi DKM:</div>
+                        <div className="font-mono text-base font-bold text-emerald-600 dark:text-emerald-400">
+                          {paymentMethod === 'Transfer BSI' ? '718-293-8472' : '101-008-9921'}
+                        </div>
+                        <div className="text-[11px] text-slate-500 font-medium">a.n. DKM Masjid Jami Nurul Iman</div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyAccount(paymentMethod === 'Transfer BSI' ? '7182938472' : '1010089921', paymentMethod)}
+                        className="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all"
+                      >
+                        {copiedBank === paymentMethod ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                        <span>{copiedBank === paymentMethod ? 'Tersalin' : 'Salin'}</span>
+                      </button>
+                    </div>
                   </div>
                 )}
 
-                {/* Proof File Upload */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                    Unggah Bukti Transfer / Scan (Opsional)
-                  </label>
-                  <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-3 text-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                    <input
-                      type="file"
-                      id="fileProof"
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                          setProofFileName(e.target.files[0].name);
-                        }
-                      }}
-                    />
-                    <label htmlFor="fileProof" className="cursor-pointer space-y-1 block">
-                      <Upload className="w-5 h-5 text-emerald-600 mx-auto" />
-                      <span className="text-xs text-slate-600 dark:text-slate-300 block font-medium">
-                        {proofFileName || 'Klik di sini untuk upload foto struk transfer'}
-                      </span>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Submit Button */}
+                {/* Submit Action Button */}
                 <button
                   type="submit"
-                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-2xl text-xs shadow-md flex items-center justify-center gap-2 transition-all mt-4"
+                  className="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-bold rounded-2xl text-xs shadow-md flex items-center justify-center gap-2 transition-all mt-4"
                 >
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Konfirmasi Donasi Rp {Number(amount).toLocaleString('id-ID')}</span>
+                  <span>Lanjutkan Konfirmasi Donasi Rp {Number(amount).toLocaleString('id-ID')}</span>
                 </button>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Success Confirmation Modal */}
+      <AnimatePresence>
+        {isSuccessModal && submittedDonation && (
+          <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-md p-4 sm:p-6 flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-md w-full shadow-2xl p-6 text-center space-y-4 my-auto"
+            >
+              <div className="w-14 h-14 bg-emerald-500/10 text-emerald-600 rounded-full flex items-center justify-center mx-auto border-2 border-emerald-500/30">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+
+              <div>
+                <h3 className="font-bold text-lg text-slate-900 dark:text-white">Alhamdulillah, Donasi Dicatat!</h3>
+                <p className="text-xs text-slate-500 mt-1">
+                  Terima kasih atas infaq/zakat Anda untuk <strong>{submittedDonation.campaignTitle}</strong>
+                </p>
+              </div>
+
+              <div className="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 text-left space-y-1.5 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">No. Referensi:</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">{submittedDonation.id}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Nama Donatur:</span>
+                  <span className="font-bold text-slate-900 dark:text-white">{submittedDonation.donorName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Jumlah Donasi:</span>
+                  <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                    Rp {submittedDonation.amount.toLocaleString('id-ID')}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Metode:</span>
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">{submittedDonation.method}</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2 pt-2">
+                <button
+                  type="button"
+                  onClick={handleSendConfirmationWA}
+                  className="w-full py-3 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold rounded-2xl text-xs shadow-md flex items-center justify-center gap-2 transition-all"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Kirim Konfirmasi ke WA Bendahara</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    printOfficialReceipt({
+                      refNumber: submittedDonation.id,
+                      donorName: submittedDonation.donorName,
+                      amount: submittedDonation.amount,
+                      category: submittedDonation.campaignTitle,
+                      date: submittedDonation.date,
+                      notes: `Metode: ${submittedDonation.method}`,
+                      recordedBy: 'Online Donatur'
+                    });
+                  }}
+                  className="w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl text-xs flex items-center justify-center gap-2 transition-all"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Cetak / Simpan Kwitansi Digital</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsSuccessModal(false);
+                    setSubmittedDonation(null);
+                  }}
+                  className="w-full py-2 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 text-xs font-semibold"
+                >
+                  Tutup
+                </button>
+              </div>
             </motion.div>
           </div>
         )}

@@ -109,7 +109,14 @@ export const Footer: React.FC = () => {
             </p>
 
             <button
-              onClick={() => isAuthenticated ? setActiveAppTab('dashboard') : setShowLoginModal(true)}
+              onClick={() => {
+                if (isAuthenticated) {
+                  setActiveAppTab('dashboard');
+                } else {
+                  setActiveAppTab('public');
+                  setPublicSubTab('login');
+                }
+              }}
               className="w-full py-2.5 px-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 border border-emerald-600/40 shadow-lg transition-all"
             >
               <ShieldCheck className="w-4 h-4 text-amber-300" />
