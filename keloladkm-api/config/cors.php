@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('CORS_ALLOWED_ORIGIN', '*')],
+    'allowed_origins' => explode(',', (string) env('CORS_ALLOWED_ORIGIN', 'https://keloladkm.masjidnuruliman-pejaten.or.id,http://localhost:3000,http://127.0.0.1:3000')),
 
     'allowed_origins_patterns' => [],
 
@@ -29,6 +29,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => false,
+    'supports_credentials' => env('CORS_SUPPORTS_CREDENTIALS', true),
 
 ];
