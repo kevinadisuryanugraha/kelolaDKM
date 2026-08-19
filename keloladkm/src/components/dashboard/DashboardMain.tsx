@@ -416,7 +416,7 @@ export const DashboardMain: React.FC = () => {
                       Lihat Rincian
                     </button>
                   </div>
-                  <div className="h-64 sm:h-72 w-full pt-2">
+                  <div className="w-full pt-2">
                     <SimpleChart
                       type="area"
                       data={chartOverviewData}

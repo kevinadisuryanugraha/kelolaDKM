@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useApp } from '../../context/AppContext';
 import { MASJID_INFO } from '../../data/mockData';
@@ -11,6 +11,7 @@ import { FinancialTransaction } from '../../types';
 
 export const PublicFinancialReport: React.FC = () => {
   const { transactions, openExportModal, accounts } = useApp();
+  const [chartType, setChartType] = useState<'bar' | 'area'>('bar');
 
   const totalMasuk = transactions.filter((t) => t.type === 'Masuk').reduce((acc, t) => acc + t.amount, 0);
   const totalKeluar = transactions.filter((t) => t.type === 'Keluar').reduce((acc, t) => acc + t.amount, 0);
@@ -135,18 +136,45 @@ export const PublicFinancialReport: React.FC = () => {
 
       {/* Chart Section */}
       <GlassCard className="p-6 sm:p-8 space-y-6" glow="emerald" hoverEffect={false}>
-        <h3 className="font-bold text-lg text-slate-900 dark:text-white">
-          Grafik Tren Pemasukan vs Pengeluaran Kas (Juli 2026)
-        </h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="font-bold text-lg text-slate-900 dark:text-white">
+              Grafik Tren Pemasukan vs Pengeluaran Kas (Juli 2026)
+            </h3>
+            <p className="text-xs text-slate-500 font-medium">Visualisasi komparasi arus kas masuk dan keluar masjid per hari</p>
+          </div>
+          <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200/60 dark:border-slate-700/60 self-start sm:self-auto">
+            <button
+              onClick={() => setChartType('bar')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                chartType === 'bar'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-emerald-600'
+              }`}
+            >
+              📊 Diagram Batang
+            </button>
+            <button
+              onClick={() => setChartType('area')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                chartType === 'area'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-emerald-600'
+              }`}
+            >
+              📈 Grafik Area
+            </button>
+          </div>
+        </div>
 
-        <div className="h-72 w-full">
+        <div className="w-full pt-2">
           <SimpleChart
-            type="bar"
+            type={chartType}
             data={chartData}
             xKey="month"
             series={[
-              { key: 'Pemasukan', label: 'Pemasukan', color: '#10b981' },
-              { key: 'Pengeluaran', label: 'Pengeluaran', color: '#f43f5e' },
+              { key: 'Pemasukan', label: 'Pemasukan Kas', color: '#10b981' },
+              { key: 'Pengeluaran', label: 'Pengeluaran Kas', color: '#f43f5e' },
             ]}
             formatValue={(v) => v.toLocaleString('id-ID')}
             formatAxis={(v) => `${(v / 1000000).toFixed(0)}Jt`}
