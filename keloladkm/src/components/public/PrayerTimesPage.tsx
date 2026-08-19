@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { PRAYER_TIMES_TODAY } from '../../data/mockData';
-import { Compass, Bell } from 'lucide-react';
+import { Compass, Bell, Clock } from 'lucide-react';
 import { PageHeader } from '../common/PageHeader';
 import { GlassCard } from '../common/GlassCard';
 import { DataTable, DataTableColumn } from '../common/DataTable';
+import { getUpcomingPrayer } from '../../utils/prayerTimes';
 
 interface WeeklyPrayerRow {
   dayLabel: string;
@@ -19,6 +20,14 @@ interface WeeklyPrayerRow {
 export const PrayerTimesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'today' | 'weekly' | 'monthly'>('today');
   const [notificationEnabled, setNotificationEnabled] = useState(false);
+  const [upcoming, setUpcoming] = useState(() => getUpcomingPrayer());
+
+  useEffect(() => {
+    const tick = () => setUpcoming(getUpcomingPrayer());
+    tick();
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const weeklyData: WeeklyPrayerRow[] = [
     { dayLabel: 'Hari Ini (Jumat)', subuh: '04:38', syuruq: '05:54', dzuhur: '12:02', ashar: '15:24', maghrib: '18:00', isya: '19:12' },
@@ -129,28 +138,39 @@ export const PrayerTimesPage: React.FC = () => {
           {/* Today Cards Grid */}
           {activeTab === 'today' && (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {PRAYER_TIMES_TODAY.map((p, idx) => (
-                <motion.div
-                  key={p.name}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className={`p-5 rounded-2xl border transition-all flex flex-col justify-between ${
-                    p.name === 'Maghrib'
-                      ? 'bg-emerald-900 text-white border-emerald-700 shadow-md font-bold'
-                      : 'bg-white/80 dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700/80 text-slate-900 dark:text-white'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-sm">{p.name}</span>
-                    <span className="font-serif text-lg opacity-80">{p.arabic}</span>
-                  </div>
-                  <div className="text-3xl font-bold font-mono tracking-wider my-2">{p.time}</div>
-                  <p className="text-[10px] opacity-75 mt-1">
-                    Iqamah Offset: +{p.iqamahOffsetMinutes} menit
-                  </p>
-                </motion.div>
-              ))}
+              {PRAYER_TIMES_TODAY.map((p, idx) => {
+                const isCurrentUpcoming = p.name === upcoming.name;
+                return (
+                  <motion.div
+                    key={p.name}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className={`p-5 rounded-2xl border transition-all flex flex-col justify-between relative overflow-hidden ${
+                      isCurrentUpcoming
+                        ? 'bg-gradient-to-br from-emerald-800 to-emerald-950 text-white border-emerald-500 shadow-xl ring-2 ring-emerald-400 font-bold'
+                        : 'bg-white/80 dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700/80 text-slate-900 dark:text-white'
+                    }`}
+                  >
+                    {isCurrentUpcoming && (
+                      <div className="absolute top-2 right-2 flex items-center gap-1 bg-amber-400 text-slate-950 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                        <Clock className="w-3 h-3" /> Menuju Adhan
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-bold text-sm">{p.name}</span>
+                      <span className="font-serif text-lg opacity-80">{p.arabic}</span>
+                    </div>
+                    <div className="text-3xl font-bold font-mono tracking-wider my-2">{p.time}</div>
+                    <div className="flex items-center justify-between text-[10px] opacity-80 mt-1">
+                      <span>Iqamah Offset: +{p.iqamahOffsetMinutes} mnt</span>
+                      {isCurrentUpcoming && (
+                        <span className="text-amber-300 font-mono font-bold">-{upcoming.timeLeftFormatted}</span>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           )}
 
