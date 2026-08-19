@@ -12,7 +12,8 @@ import {
   OfficialLetter,
   AuditLog,
   KajianEvent,
-  CMSArticle
+  CMSArticle,
+  DashboardNotification
 } from '../types';
 import {
   FINANCIAL_TRANSACTIONS,
@@ -26,7 +27,8 @@ import {
   OFFICIAL_LETTERS,
   AUDIT_LOGS,
   KAJIAN_EVENTS,
-  CMS_ARTICLES
+  CMS_ARTICLES,
+  DEFAULT_NOTIFICATIONS
 } from '../data/mockData';
 import {
   fetchAllDashboardData,
@@ -117,6 +119,14 @@ interface AppContextType {
   // Running text (public website ticker)
   runningText: string;
   setRunningText: (text: string) => void;
+
+  // Professional Dashboard Notifications
+  notifications: DashboardNotification[];
+  unreadNotificationsCount: number;
+  markNotificationAsRead: (id: string) => void;
+  markAllNotificationsAsRead: () => void;
+  clearAllNotifications: () => void;
+  addNotification: (notif: Omit<DashboardNotification, 'id' | 'timestamp' | 'isRead'>) => void;
 
   // Export Modal state
   exportModalData: { isOpen: boolean; title: string; data: any[] };
@@ -254,6 +264,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     '🕌 Selamat Datang di Masjid Jami Nurul Iman Pejaten Timur • Infaq Jumat Pekan Ini: Rp 8.450.000 • Kajian Subuh Sabtu Bersama KH. Ahmad Fauzi • Donasi QRIS Tersedia 24 Jam'
   );
 
+  const [notifications, setNotifications] = useState<DashboardNotification[]>(() =>
+    loadFromStorage('notifications', DEFAULT_NOTIFICATIONS)
+  );
+
   const [toasts, setToasts] = useState<ToastNotification[]>([]);
   const [exportModalData, setExportModalData] = useState<{ isOpen: boolean; title: string; data: any[] }>({
     isOpen: false,
@@ -274,6 +288,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => { localStorage.setItem('dkm_auditLogs', JSON.stringify(auditLogs)); }, [auditLogs]);
   useEffect(() => { localStorage.setItem('dkm_kajianEvents', JSON.stringify(kajianEvents)); }, [kajianEvents]);
   useEffect(() => { localStorage.setItem('dkm_articles', JSON.stringify(articles)); }, [articles]);
+  useEffect(() => { localStorage.setItem('dkm_notifications', JSON.stringify(notifications)); }, [notifications]);
+
+  const unreadNotificationsCount = notifications.filter((n) => !n.isRead).length;
+
+  const markNotificationAsRead = useCallback((id: string) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+    );
+  }, []);
+
+  const markAllNotificationsAsRead = useCallback(() => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    setToasts((prev) => [
+      ...prev,
+      { id: 'toast-' + Date.now(), type: 'info', message: 'Semua notifikasi telah ditandai dibaca' }
+    ]);
+  }, []);
+
+  const clearAllNotifications = useCallback(() => {
+    setNotifications([]);
+    setToasts((prev) => [
+      ...prev,
+      { id: 'toast-' + Date.now(), type: 'info', message: 'Semua riwayat notifikasi telah dibersihkan' }
+    ]);
+  }, []);
+
+  const addNotification = useCallback((notif: Omit<DashboardNotification, 'id' | 'timestamp' | 'isRead'>) => {
+    const newNotif: DashboardNotification = {
+      ...notif,
+      id: `notif-${Date.now()}`,
+      timestamp: 'Baru saja',
+      isRead: false
+    };
+    setNotifications((prev) => [newNotif, ...prev]);
+  }, []);
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -321,6 +370,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (created?.id) setTransactions((prev) => prev.map((t) => (t.id === id ? { ...created, id: String(created.id) } : t)));
     });
     addAuditLog('ADD_TRANSACTION', 'Keuangan', `Menambahkan transaksi ${tx.type}: Rp ${tx.amount.toLocaleString('id-ID')} (${tx.description})`);
+    addNotification({
+      title: 'Transaksi Kas Baru Tercatat',
+      message: `${tx.type === 'Masuk' ? 'Pemasukan' : 'Pengeluaran'} ${tx.accountName}: Rp ${tx.amount.toLocaleString('id-ID')} (${tx.description || tx.category})`,
+      type: 'keuangan',
+      actionTab: 'keuangan',
+      badge: tx.type === 'Masuk' ? 'Kas Masuk' : 'Kas Keluar'
+    });
     showToast(`Transaksi ${tx.type} sebesar Rp ${tx.amount.toLocaleString('id-ID')} berhasil dicatat!`, 'success');
   };
 
@@ -329,6 +385,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       prev.map((t) => (t.id === id ? { ...t, status: 'Approved' } : t))
     );
     addAuditLog('APPROVE_TRANSACTION', 'Keuangan', `Menyetujui transaksi ${id}`);
+    addNotification({
+      title: 'Persetujuan Transaksi',
+      message: `Transaksi kas ${id} telah disetujui oleh ${currentRole.toUpperCase()}.`,
+      type: 'keuangan',
+      actionTab: 'keuangan',
+      badge: 'Approved'
+    });
     showToast(`Transaksi ${id} telah disetujui`, 'success');
   };
 
@@ -376,6 +439,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (created?.id) setDonorRecords((prev) => prev.map((d) => (d.id === id ? { ...created, id: String(created.id) } : d)));
     });
     addAuditLog('DONATION_RECEIVED', 'Donasi', `Donasi diterima dari ${donor.donorName} sebesar Rp ${donor.amount.toLocaleString('id-ID')}`);
+    addNotification({
+      title: 'Donasi Baru Terverifikasi',
+      message: `${donor.donorName} mendonasikan Rp ${donor.amount.toLocaleString('id-ID')} untuk ${donor.campaignTitle} via ${donor.method}.`,
+      type: 'donasi',
+      actionTab: 'donasi_ziswaf',
+      badge: donor.method
+    });
     showToast(`Alhamdulillah, donasi sebesar Rp ${donor.amount.toLocaleString('id-ID')} berhasil diterima!`, 'success');
   };
 
@@ -448,6 +518,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (created?.id) setLetters((prev) => prev.map((l) => (l.id === id ? { ...created, id: String(created.id) } : l)));
     });
     addAuditLog('CREATE_LETTER', 'Surat', `Membuat surat ${letter.type}: ${letter.subject}`);
+    addNotification({
+      title: 'Registrasi Surat Resmi',
+      message: `Surat ${letter.type} No. ${letter.letterNumber}: ${letter.subject} (${letter.senderOrRecipient}).`,
+      type: 'surat',
+      actionTab: 'surat_dokumen',
+      badge: letter.type
+    });
     showToast(`Surat ${letter.type} dengan nomor ${letter.letterNumber} berhasil disimpan!`, 'success');
   };
 
@@ -459,6 +536,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (created?.id) setKajianEvents((prev) => prev.map((k) => (k.id === id ? { ...created, id: String(created.id) } : k)));
     });
     addAuditLog('ADD_KAJIAN', 'Agenda', `Menambahkan jadwal kajian baru: ${event.title}`);
+    addNotification({
+      title: 'Agenda Kajian Baru',
+      message: `${event.title} bersama ${event.speaker} (${event.date} pk ${event.time}).`,
+      type: 'agenda',
+      actionTab: 'agenda_event',
+      badge: 'Kajian'
+    });
     showToast(`Agenda Kajian "${event.title}" berhasil dipublikasikan!`, 'success');
   };
 
@@ -556,6 +640,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         toasts,
         showToast,
         dismissToast,
+        notifications,
+        unreadNotificationsCount,
+        markNotificationAsRead,
+        markAllNotificationsAsRead,
+        clearAllNotifications,
+        addNotification,
         exportModalData,
         openExportModal,
         closeExportModal

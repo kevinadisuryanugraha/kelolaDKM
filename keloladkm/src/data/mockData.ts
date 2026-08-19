@@ -9,6 +9,7 @@ export { INVENTORY_ITEMS, ROOM_BOOKINGS } from './modules/inventaris';
 export { OFFICIAL_LETTERS, OFFICIAL_DOCUMENTS } from './modules/surat';
 export { CMS_ARTICLES, AUDIT_LOGS } from './modules/cmsaudit';
 export { FAQS_PUBLIC } from './modules/faq';
+export { DEFAULT_NOTIFICATIONS } from './modules/notifications';
 
 export const MASJID_INFO = {
   name: 'Masjid Jami Nurul Iman',

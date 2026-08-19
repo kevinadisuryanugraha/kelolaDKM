@@ -217,3 +217,15 @@ export interface AuditLog {
   details: string;
   ipAddress: string;
 }
+
+export interface DashboardNotification {
+  id: string;
+  title: string;
+  message: string;
+  type: 'keuangan' | 'donasi' | 'agenda' | 'surat' | 'security' | 'system';
+  timestamp: string;
+  isRead: boolean;
+  actionTab?: string;
+  badge?: string;
+}
+
