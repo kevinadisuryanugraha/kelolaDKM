@@ -30,6 +30,28 @@ export const PrayerTimesPage: React.FC = () => {
     { dayLabel: 'Kamis, 30 Juli', subuh: '04:40', syuruq: '05:56', dzuhur: '12:03', ashar: '15:25', maghrib: '18:02', isya: '19:14' }
   ];
 
+  const monthlyData: WeeklyPrayerRow[] = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + (i - 5));
+    const dayLabel = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'short' }).format(d);
+    const minuteOffset = Math.floor(i / 6);
+    const subuhMin = String(38 + (i % 2)).padStart(2, '0');
+    const dzuhurMin = String(2 + minuteOffset).padStart(2, '0');
+    const asharMin = String(24 + minuteOffset).padStart(2, '0');
+    const maghribMin = String(i % 3).padStart(2, '0');
+    const isyaMin = String(12 + (i % 3)).padStart(2, '0');
+
+    return {
+      dayLabel,
+      subuh: `04:${subuhMin}`,
+      syuruq: '05:55',
+      dzuhur: `12:${dzuhurMin}`,
+      ashar: `15:${asharMin}`,
+      maghrib: `18:${maghribMin}`,
+      isya: `19:${isyaMin}`
+    };
+  });
+
   const prayerColumns: DataTableColumn<WeeklyPrayerRow>[] = [
     { key: 'dayLabel', header: 'Hari & Tanggal', className: 'font-bold whitespace-nowrap' },
     { key: 'subuh', header: 'Subuh', className: 'font-mono whitespace-nowrap' },
@@ -134,7 +156,12 @@ export const PrayerTimesPage: React.FC = () => {
 
           {/* Weekly / Monthly Table */}
           {activeTab !== 'today' && (
-            <DataTable columns={prayerColumns} data={weeklyData} keyField="dayLabel" minWidth="w-full min-w-[600px]" />
+            <DataTable
+              columns={prayerColumns}
+              data={activeTab === 'monthly' ? monthlyData : weeklyData}
+              keyField="dayLabel"
+              minWidth="w-full min-w-[600px]"
+            />
           )}
         </GlassCard>
 

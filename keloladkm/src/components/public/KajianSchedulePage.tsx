@@ -5,6 +5,7 @@ import { Search, MapPin, MessageCircle } from 'lucide-react';
 import { PageHeader } from '../common/PageHeader';
 import { GlassCard } from '../common/GlassCard';
 import { Avatar } from '../common/Avatar';
+import { formatWhatsAppMessage, openWhatsAppDirect } from '../../utils/whatsappGateway';
 
 export const KajianSchedulePage: React.FC = () => {
   const { kajianEvents, showToast } = useApp();
@@ -112,7 +113,21 @@ export const KajianSchedulePage: React.FC = () => {
                 <MapPin className="w-3.5 h-3.5 text-rose-500" /> {item.location}
               </span>
               <button
-                onClick={() => showToast(`Link reminder kajian untuk "${item.title}" dikirim via WhatsApp`, 'success')}
+                onClick={() => {
+                  const msg = formatWhatsAppMessage({
+                    recipientPhone: '',
+                    recipientName: 'Sahabat Jamaah',
+                    type: 'BROADCAST_KAJIAN',
+                    data: {
+                      title: item.title,
+                      speaker: item.speaker,
+                      date: item.date,
+                      time: item.time,
+                    }
+                  });
+                  openWhatsAppDirect('', msg);
+                  showToast(`Membuka WhatsApp untuk jadwal kajian "${item.title}"`, 'info');
+                }}
                 className="px-3.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-600 hover:text-white text-emerald-700 dark:text-emerald-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all border border-emerald-500/20"
               >
                 <MessageCircle className="w-3.5 h-3.5" />

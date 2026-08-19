@@ -9,6 +9,7 @@ import { GlassCard } from '../common/GlassCard';
 import { BentoGrid, BentoItem } from '../common/BentoGrid';
 import { Avatar } from '../common/Avatar';
 import { PlaceholderImage } from '../common/PlaceholderImage';
+import { formatWhatsAppMessage, openWhatsAppDirect } from '../../utils/whatsappGateway';
 import {
   Clock, QrCode, Calendar, Heart, BookOpen, Users, TrendingUp,
   MapPin, Award, ArrowRight, MessageCircle, DollarSign, CheckCircle2, Volume2
@@ -167,7 +168,24 @@ const KajianSection: React.FC = () => {
               <span className="text-[11px] text-slate-500 flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5 text-rose-500" /> {item.location}
               </span>
-              <button onClick={() => showToast(`Pengingat WhatsApp untuk ${item.title} telah dikirim ke HP Anda`, 'info')} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-emerald-600 hover:text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-1 border border-slate-200/60 dark:border-slate-700/60">
+              <button
+                onClick={() => {
+                  const msg = formatWhatsAppMessage({
+                    recipientPhone: '',
+                    recipientName: 'Sahabat Jamaah',
+                    type: 'BROADCAST_KAJIAN',
+                    data: {
+                      title: item.title,
+                      speaker: item.speaker,
+                      date: item.date,
+                      time: item.time,
+                    }
+                  });
+                  openWhatsAppDirect('', msg);
+                  showToast(`Membuka WhatsApp untuk jadwal kajian ${item.title}`, 'info');
+                }}
+                className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-emerald-600 hover:text-white rounded-xl text-xs font-semibold transition-all flex items-center gap-1 border border-slate-200/60 dark:border-slate-700/60"
+              >
                 <MessageCircle className="w-3.5 h-3.5" /> Ingatkan WA
               </button>
             </div>

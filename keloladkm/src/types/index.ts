@@ -96,7 +96,7 @@ export interface DonorRecord {
   campaignId: string;
   campaignTitle: string;
   amount: number;
-  method: 'QRIS' | 'Transfer BSI' | 'Transfer Mandiri' | 'Cash / Tunai';
+  method: 'QRIS' | 'Transfer BSI' | 'Transfer Mandiri' | 'Cash / Tunai' | 'Transfer Muamalat';
   date: string;
   status: 'Verifikasi' | 'Diterima' | 'Ditolak';
   proofUrl?: string;

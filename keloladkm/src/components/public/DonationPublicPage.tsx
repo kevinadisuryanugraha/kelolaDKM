@@ -52,7 +52,7 @@ export const DonationPublicPage: React.FC = () => {
       method: paymentMethod,
       isAnonymous,
       date: new Date().toISOString().slice(0, 10),
-      status: 'Pending' as const,
+      status: 'Verifikasi' as const,
       proofUrl: proofFileName ? 'uploaded_proof.jpg' : undefined
     };
 

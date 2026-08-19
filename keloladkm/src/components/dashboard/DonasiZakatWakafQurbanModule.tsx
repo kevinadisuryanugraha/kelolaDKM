@@ -95,7 +95,7 @@ export const DonasiZakatWakafQurbanModule: React.FC = () => {
       render: (d) => (
         <span
           className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-            d.status === 'Terverifikasi'
+            d.status === 'Diterima'
               ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
               : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
           }`}
@@ -118,8 +118,7 @@ export const DonasiZakatWakafQurbanModule: React.FC = () => {
               donorName: d.donorName,
               amount: d.amount,
               category: d.campaignTitle,
-              date: d.date,
-              type: 'Masuk'
+              date: d.date
             });
           }}
           className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 rounded-lg text-[10px] font-bold flex items-center gap-1 mx-auto border border-slate-200 dark:border-slate-700"
@@ -180,8 +179,7 @@ export const DonasiZakatWakafQurbanModule: React.FC = () => {
               donorName: q.participantName,
               amount: q.amount,
               category: `Kupon Qurban 1448 H (${q.animalType})`,
-              date: new Date().toISOString().slice(0, 10),
-              type: 'Masuk'
+              date: new Date().toISOString().slice(0, 10)
             });
           }}
           className="px-2.5 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 rounded-lg text-[10px] font-bold flex items-center gap-1 mx-auto border border-amber-500/30"

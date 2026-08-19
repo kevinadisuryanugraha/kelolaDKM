@@ -11,7 +11,8 @@ import {
   RoomBooking,
   OfficialLetter,
   AuditLog,
-  KajianEvent
+  KajianEvent,
+  CMSArticle
 } from '../types';
 import {
   FINANCIAL_TRANSACTIONS,

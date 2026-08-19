@@ -346,12 +346,16 @@ export const AgendaEventModule: React.FC = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => {
-                    const msg = formatWhatsAppMessage('KAJIAN', {
-                      title: event.title,
-                      speaker: event.speaker,
-                      date: event.date,
-                      time: event.time,
-                      location: event.location
+                    const msg = formatWhatsAppMessage({
+                      recipientPhone: '',
+                      recipientName: 'Jamaah Masjid Nurul Iman',
+                      type: 'BROADCAST_KAJIAN',
+                      data: {
+                        title: event.title,
+                        speaker: event.speaker,
+                        date: event.date,
+                        time: event.time
+                      }
                     });
                     openWhatsAppDirect('', msg);
                   }}
