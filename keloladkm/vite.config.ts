@@ -44,10 +44,15 @@ export default defineConfig(() => {
       alias: { '@': path.resolve(__dirname, '.') },
     },
     build: {
+      target: 'es2020',
+      cssCodeSplit: true,
+      sourcemap: false,
+      chunkSizeWarningLimit: 600,
       rollupOptions: {
         output: {
           manualChunks: {
             vendor: ['react', 'react-dom', 'react-router-dom'],
+            motion: ['motion/react'],
             maps: ['@vis.gl/react-google-maps'],
             icons: ['lucide-react'],
           },

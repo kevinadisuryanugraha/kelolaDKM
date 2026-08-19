@@ -30,15 +30,26 @@ import {
   TrendingUp,
   ArrowUpRight
 } from 'lucide-react';
-import { KeuanganModule } from './KeuanganModule';
-import { DonasiZakatWakafQurbanModule } from './DonasiZakatWakafQurbanModule';
-import { InventarisSarprasModule } from './InventarisSarprasModule';
-import { AgendaEventModule } from './AgendaEventModule';
-import { SuratDokumenModule } from './SuratDokumenModule';
+const KeuanganModule = React.lazy(() => import('./KeuanganModule').then((m) => ({ default: m.KeuanganModule })));
+const DonasiZakatWakafQurbanModule = React.lazy(() => import('./DonasiZakatWakafQurbanModule').then((m) => ({ default: m.DonasiZakatWakafQurbanModule })));
+const InventarisSarprasModule = React.lazy(() => import('./InventarisSarprasModule').then((m) => ({ default: m.InventarisSarprasModule })));
+const AgendaEventModule = React.lazy(() => import('./AgendaEventModule').then((m) => ({ default: m.AgendaEventModule })));
+const SuratDokumenModule = React.lazy(() => import('./SuratDokumenModule').then((m) => ({ default: m.SuratDokumenModule })));
+const WebsiteCMSModule = React.lazy(() => import('./WebsiteCMSModule').then((m) => ({ default: m.WebsiteCMSModule })));
+const BroadcastNotificationModule = React.lazy(() => import('./BroadcastNotificationModule').then((m) => ({ default: m.BroadcastNotificationModule })));
+const AuditLogModule = React.lazy(() => import('./AuditLogModule').then((m) => ({ default: m.AuditLogModule })));
 
-import { WebsiteCMSModule } from './WebsiteCMSModule';
-import { BroadcastNotificationModule } from './BroadcastNotificationModule';
-import { AuditLogModule } from './AuditLogModule';
+const ModuleSkeleton: React.FC = () => (
+  <div className="space-y-4 animate-pulse py-2">
+    <div className="h-10 bg-slate-200/70 dark:bg-slate-800/70 rounded-2xl w-48" />
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="h-28 bg-slate-200/50 dark:bg-slate-800/50 rounded-3xl" />
+      <div className="h-28 bg-slate-200/50 dark:bg-slate-800/50 rounded-3xl" />
+      <div className="h-28 bg-slate-200/50 dark:bg-slate-800/50 rounded-3xl" />
+    </div>
+    <div className="h-72 bg-slate-200/40 dark:bg-slate-800/40 rounded-3xl" />
+  </div>
+);
 import { SimpleChart } from '../common/SimpleChart';
 import { GlassCard } from '../common/GlassCard';
 import { BentoGrid, BentoItem } from '../common/BentoGrid';
@@ -558,16 +569,18 @@ export const DashboardMain: React.FC = () => {
             </div>
           )}
 
-          {/* Module Views */}
-          {dashboardSubTab === 'keuangan' && <KeuanganModule />}
-          {dashboardSubTab === 'donasi_ziswaf' && <DonasiZakatWakafQurbanModule />}
-          {dashboardSubTab === 'inventaris' && <InventarisSarprasModule />}
-          {dashboardSubTab === 'agenda_event' && <AgendaEventModule />}
-          {dashboardSubTab === 'surat_dokumen' && <SuratDokumenModule />}
+          {/* Module Views (Lazy Loaded on Demand) */}
+          <React.Suspense fallback={<ModuleSkeleton />}>
+            {dashboardSubTab === 'keuangan' && <KeuanganModule />}
+            {dashboardSubTab === 'donasi_ziswaf' && <DonasiZakatWakafQurbanModule />}
+            {dashboardSubTab === 'inventaris' && <InventarisSarprasModule />}
+            {dashboardSubTab === 'agenda_event' && <AgendaEventModule />}
+            {dashboardSubTab === 'surat_dokumen' && <SuratDokumenModule />}
 
-          {dashboardSubTab === 'website_cms' && <WebsiteCMSModule />}
-          {dashboardSubTab === 'broadcast' && <BroadcastNotificationModule />}
-          {dashboardSubTab === 'audit_log' && <AuditLogModule />}
+            {dashboardSubTab === 'website_cms' && <WebsiteCMSModule />}
+            {dashboardSubTab === 'broadcast' && <BroadcastNotificationModule />}
+            {dashboardSubTab === 'audit_log' && <AuditLogModule />}
+          </React.Suspense>
         </main>
 
         {/* Status Bar / Footer */}
