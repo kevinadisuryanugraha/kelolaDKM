@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { useApp } from '../../context/AppContext';
 import { useI18n } from '../../i18n/I18nContext';
 import { Home, Clock, Calendar, Heart, ShieldCheck, LayoutDashboard } from 'lucide-react';
@@ -62,35 +63,37 @@ export const MobileBottomBar: React.FC = () => {
 
   return (
     <nav
-      aria-label="Mobile Navigation"
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200/90 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-2 py-1.5 safe-area-pb"
+      aria-label="Mobile Navigation Bar"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/90 dark:border-slate-800 shadow-[0_-8px_25px_rgba(0,0,0,0.08)] px-2 pt-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] transition-colors"
     >
       <div className="max-w-md mx-auto grid grid-cols-5 gap-1 items-center">
         {navItems.map((item) => {
           const Icon = item.icon;
           return (
-            <button
+            <motion.button
               key={item.id}
+              whileTap={{ scale: 0.9 }}
               onClick={item.action}
-              className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl transition-all ${
+              className={`relative flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl transition-all select-none ${
                 item.isActive
-                  ? 'text-emerald-600 dark:text-emerald-400 font-bold scale-105'
+                  ? 'text-emerald-600 dark:text-emerald-400 font-bold'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
-              <div
-                className={`p-1 rounded-xl transition-all ${
-                  item.isActive
-                    ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                    : ''
-                }`}
-              >
-                <Icon className="w-5 h-5" />
+              {item.isActive && (
+                <motion.div
+                  layoutId="activeBottomNavPill"
+                  className="absolute inset-0 bg-emerald-500/10 dark:bg-emerald-500/15 rounded-2xl border border-emerald-500/20"
+                  transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+                />
+              )}
+              <div className="relative z-10 p-1">
+                <Icon className={`w-5 h-5 transition-transform ${item.isActive ? 'scale-110' : ''}`} />
               </div>
-              <span className="text-[10px] leading-tight truncate mt-0.5 font-medium tracking-tight">
+              <span className="relative z-10 text-[10px] leading-tight truncate mt-0.5 font-bold tracking-tight">
                 {item.label}
               </span>
-            </button>
+            </motion.button>
           );
         })}
       </div>

@@ -56,7 +56,7 @@ export const DashboardMain: React.FC = () => {
   } = useApp();
   const { t } = useI18n();
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 1024);
 
   // Active User Role evaluation
   const activeRole: UserRole = (authUser?.role || currentRole || 'super_admin') as UserRole;

@@ -256,8 +256,8 @@ export const PublicHome: React.FC = () => {
       <RunningTicker />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-3xl bg-slate-900 text-white p-6 sm:p-10 lg:p-12 shadow-xl border border-slate-800">
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <section className="relative overflow-hidden rounded-3xl bg-slate-900 text-white p-5 sm:p-8 lg:p-12 shadow-xl border border-slate-800">
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="lg:col-span-7 space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-800 text-emerald-400 rounded-lg text-xs font-semibold border border-slate-700">
               <MapPin className="w-3.5 h-3.5 text-emerald-400" />

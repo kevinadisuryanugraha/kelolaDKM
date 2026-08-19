@@ -51,19 +51,19 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           </div>
         )}
 
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight break-words">
           {resolvedTitle}
         </h1>
 
         {resolvedSubtitle && (
-          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 font-normal leading-relaxed max-w-2xl">
+          <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-300 font-normal leading-relaxed max-w-2xl">
             {resolvedSubtitle}
           </p>
         )}
       </motion.div>
 
       {action && (
-        <div className={cn('mt-6 md:mt-0', !centered && 'md:absolute md:right-0 md:bottom-8 flex items-center gap-3')}>
+        <div className={cn('mt-4 md:mt-0', !centered && 'md:absolute md:right-0 md:bottom-8 flex items-center gap-2.5 flex-wrap')}>
           {action}
         </div>
       )}
