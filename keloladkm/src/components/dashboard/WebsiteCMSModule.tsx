@@ -28,6 +28,7 @@ import {
   LayoutTemplate
 } from 'lucide-react';
 import { GlassCard } from '../common/GlassCard';
+import { FilterTabs } from '../common/FilterTabs';
 import { CMSArticle } from '../../types';
 import { PlaceholderImage } from '../common/PlaceholderImage';
 
@@ -396,31 +397,16 @@ export const WebsiteCMSModule: React.FC = () => {
         </div>
       </GlassCard>
 
-      {/* Navigation Subtabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200/80 dark:border-slate-800 pb-2 overflow-x-auto">
-        {[
+      {/* Navigation Subtabs (Interactive Dropdown on Mobile, Pills on Desktop) */}
+      <FilterTabs
+        tabs={[
           { id: 'articles', label: '📰 Manajemen Berita & Artikel', count: articles.length },
           { id: 'banner', label: '🌐 Running Text & Banner Hero' },
           { id: 'guide', label: '📖 Panduan Operasional CMS DKM' }
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
-            className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-              activeTab === tab.id
-                ? 'bg-emerald-600 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-400 hover:text-emerald-600 border border-slate-200/80 dark:border-slate-800'
-            }`}
-          >
-            <span>{tab.label}</span>
-            {tab.count !== undefined && (
-              <span className={`px-2 py-0.5 rounded-full text-[10px] ${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'}`}>
-                {tab.count}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
+        ]}
+        activeTab={activeTab}
+        onChange={(id) => setActiveTab(id as any)}
+      />
 
       {/* ========================================== */}
       {/* TAB 1: ARTICLES MANAGEMENT TABLE */}
