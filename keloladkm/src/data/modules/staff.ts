@@ -2,7 +2,7 @@ import { DkmStaff, ImamSchedule } from '../../types';
 
 export const DKM_STAFF: DkmStaff[] = [
   {
-    id: 'STF-01', name: 'H. Mohammad Zamzami, S.E.', position: 'Ketua DKM',
+    id: 'STF-01', name: 'H. Hamdani', position: 'Ketua DKM',
     department: 'Badan Pengurus Harian', phone: '0812-9988-1122',
     email: 'ketua@masjidnuruliman-pejaten.or.id',
     photoUrl: '', period: '2024 - 2027'
@@ -20,7 +20,7 @@ export const DKM_STAFF: DkmStaff[] = [
     photoUrl: '', period: '2024 - 2027'
   },
   {
-    id: 'STF-04', name: 'H. Rahmat Hidayat, Ak., CA', position: 'Bendahara Umum',
+    id: 'STF-04', name: 'T. Handoko', position: 'Bendahara Umum',
     department: 'Bidang Keuangan & ZISWAF', phone: '0811-8822-3344',
     email: 'bendahara@masjidnuruliman-pejaten.or.id',
     photoUrl: '', period: '2024 - 2027'

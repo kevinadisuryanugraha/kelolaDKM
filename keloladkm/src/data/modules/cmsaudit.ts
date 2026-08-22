@@ -31,21 +31,21 @@ export const AUDIT_LOGS: AuditLog[] = [
   {
     id: 'LOG-1001',
     timestamp: '2026-07-24 09:15:22',
-    userName: 'H. Rahmat Hidayat',
+    userName: 'T. Handoko',
     userRole: 'Bendahara',
     action: 'CREATE_TRANSACTION',
     module: 'Keuangan',
-    details: 'Menambahkan transaksi Kas Masuk Rp 8.450.000 (Infaq Jumat)',
+    details: 'Menambahkan transaksi Kas Masuk Rp 250.000 (QRIS Bpk Abdulloh Jusuf)',
     ipAddress: '180.252.110.45'
   },
   {
     id: 'LOG-1002',
-    timestamp: '2026-07-24 08:30:10',
-    userName: 'H. M. Zamzami',
+    timestamp: '2026-08-18 08:30:10',
+    userName: 'H. Hamdani',
     userRole: 'Ketua DKM',
     action: 'APPROVE_BUDGET',
     module: 'Approval',
-    details: 'Menyetujui pengajuan 2 unit Microphone Wireless Shure',
+    details: 'Menyetujui realisasi pengeluaran kas ibadah sholat Jumat',
     ipAddress: '180.252.110.12'
   },
   {

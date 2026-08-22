@@ -33,7 +33,7 @@ export const AboutSection: React.FC = () => {
               </div>
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 dark:text-white text-lg">H. M. Zamzami, S.E.</h3>
+              <h3 className="font-bold text-slate-900 dark:text-white text-lg">H. Hamdani</h3>
               <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">
                 Ketua DKM Masjid Jami Nurul Iman
               </p>

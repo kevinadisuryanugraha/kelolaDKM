@@ -27,6 +27,6 @@ describe('offline mutation queue', () => {
   });
 
   it('flushPendingMutations with an empty queue resolves cleanly', async () => {
-    await expect(flushPendingMutations()).resolves.toBeUndefined();
+    await expect(flushPendingMutations()).resolves.toEqual({ syncedCount: 0, remainingCount: 0 });
   });
 });

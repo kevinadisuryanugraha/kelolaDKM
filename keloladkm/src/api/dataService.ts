@@ -119,22 +119,25 @@ const MUTATION_HANDLERS: Record<string, (payload: any) => Promise<any>> = {
   kajian_event: (p) => api.createKajianEvent(camelToSnake(p)),
 };
 
-export async function flushPendingMutations(): Promise<void> {
+export async function flushPendingMutations(): Promise<{ syncedCount: number; remainingCount: number }> {
   const queue = getPendingMutations();
-  if (queue.length === 0) return;
+  if (queue.length === 0) return { syncedCount: 0, remainingCount: 0 };
 
   const remaining: PendingMutation[] = [];
+  let syncedCount = 0;
   for (const item of queue) {
     const handler = MUTATION_HANDLERS[item.type];
     if (!handler) continue;
     try {
       await handler(item.payload);
+      syncedCount++;
     } catch {
       remaining.push(item);
     }
   }
 
   try { localStorage.setItem(PENDING_KEY, JSON.stringify(remaining)); } catch {}
+  return { syncedCount, remainingCount: remaining.length };
 }
 
 export const createTransaction = (data: any) => mutate('transaction', () => api.createTransaction(camelToSnake(data)), data);

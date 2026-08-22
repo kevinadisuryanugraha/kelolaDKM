@@ -34,7 +34,7 @@ export const LoginModal: React.FC<Props> = ({ onLogin, onClose }) => {
         const partialUser = err?.response?.data?.data?.user || err?.response?.data?.user || null;
         const mockUser = {
           id: partialUser?.id || 1,
-          name: partialUser?.name || 'H. M. Zamzami',
+          name: partialUser?.name || 'H. Hamdani',
           email: email || 'admin@masjidnuruliman.or.id',
           role: partialUser?.role || 'ketua_dkm'
         };

@@ -27,7 +27,7 @@ export const MASJID_INFO = {
     { bank: 'Bank Mandiri Syariah', accountNumber: '127-000-889912-3', accountName: 'DKM Nurul Iman - Pembangunan' }
   ],
   stats: {
-    totalKas: 248500000,
+    totalKas: 9108454,
     totalJamaah: 1850,
     totalProgramAktif: 12,
     totalDonaturAktif: 320,

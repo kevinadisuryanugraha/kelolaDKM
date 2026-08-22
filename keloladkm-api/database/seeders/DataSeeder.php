@@ -19,30 +19,80 @@ class DataSeeder extends Seeder
 {
     public function run(): void
     {
-        // COA
+        // COA Standar Riil Masjid Jami Nurul Iman
         foreach ([
-            ['code' => '101.1', 'name' => 'Kas Tunai Utama Masjid', 'type' => 'Aset', 'balance' => 18_500_000],
-            ['code' => '101.2', 'name' => 'Kas Tunai Kotak Infaq', 'type' => 'Aset', 'balance' => 7_200_000],
-            ['code' => '102.1', 'name' => 'Bank BSI - Rekening Kas Operasional', 'type' => 'Aset', 'balance' => 142_800_000],
-            ['code' => '102.2', 'name' => 'Bank BSI - Rekening ZISWAF', 'type' => 'Aset', 'balance' => 52_000_000],
-            ['code' => '102.3', 'name' => 'Bank Mandiri - Rekening Pembangunan', 'type' => 'Aset', 'balance' => 28_000_000],
-            ['code' => '401.1', 'name' => 'Infaq Salat Jumat', 'type' => 'Penerimaan', 'balance' => 85_400_000],
-            ['code' => '401.2', 'name' => 'Donasi Online & QRIS', 'type' => 'Penerimaan', 'balance' => 64_200_000],
-            ['code' => '402.1', 'name' => 'Penerimaan Zakat Mal & Fitrah', 'type' => 'Penerimaan', 'balance' => 48_000_000],
-            ['code' => '501.1', 'name' => 'Beban Listrik, Air & Wi-Fi', 'type' => 'Pengeluaran', 'balance' => 14_500_000],
-            ['code' => '501.2', 'name' => 'Honorarium Imam, Muadzin & Marbot', 'type' => 'Pengeluaran', 'balance' => 28_000_000],
-            ['code' => '502.1', 'name' => 'Pemeliharaan AC, Sound System & Karpet', 'type' => 'Pengeluaran', 'balance' => 12_400_000],
+            ['code' => '101.1', 'name' => 'Kas Tunai (Brankas DKM)', 'type' => 'Aset', 'balance' => 118_454],
+            ['code' => '102.1', 'name' => 'Bank BSI & QRIS Operasional', 'type' => 'Aset', 'balance' => 8_990_000],
+            ['code' => '401.1', 'name' => 'Infaq Sholat Jumat', 'type' => 'Penerimaan', 'balance' => 7_927_500],
+            ['code' => '401.2', 'name' => 'Kotak Amal Warga RT 008', 'type' => 'Penerimaan', 'balance' => 1_617_000],
+            ['code' => '401.3', 'name' => 'Infaq & Sadakoh Donatur', 'type' => 'Penerimaan', 'balance' => 6_720_000],
+            ['code' => '401.4', 'name' => 'Penerimaan QRIS Nasional', 'type' => 'Penerimaan', 'balance' => 1_475_000],
+            ['code' => '501.1', 'name' => 'Biaya Ibadah Sholat Jumat', 'type' => 'Pengeluaran', 'balance' => 6_600_000],
+            ['code' => '501.2', 'name' => 'Biaya Kebersihan Masjid', 'type' => 'Pengeluaran', 'balance' => 3_520_000],
+            ['code' => '501.3', 'name' => 'Biaya Majelis Ta\'lim & Kajian', 'type' => 'Pengeluaran', 'balance' => 5_300_000],
+            ['code' => '501.4', 'name' => 'Tagihan Listrik PLN', 'type' => 'Pengeluaran', 'balance' => 2_173_172],
+            ['code' => '501.5', 'name' => 'Program Sosial & Beras DKM', 'type' => 'Pengeluaran', 'balance' => 1_700_000],
+            ['code' => '501.6', 'name' => 'Belanja Sarana & Perlengkapan', 'type' => 'Pengeluaran', 'balance' => 1_919_900],
         ] as $c) {
             FinancialAccount::create($c);
         }
 
-        // Transactions
+        // Transactions Riil (Agustus, Juli, Juni 2026)
         foreach ([
-            ['ref_number' => 'TRX-2026-089', 'date' => '2026-07-24', 'type' => 'Masuk', 'account_code' => '401.1', 'account_name' => 'Infaq Salat Jumat', 'description' => 'Infaq Kotak Salat Jumat Pekan IV Juli 2026', 'amount' => 8_450_000, 'category' => 'Infaq Jumat', 'recorded_by' => 'H. Rahmat Hidayat', 'status' => 'Approved'],
-            ['ref_number' => 'TRX-2026-088', 'date' => '2026-07-23', 'type' => 'Keluar', 'account_code' => '501.1', 'account_name' => 'Beban Listrik, Air & Wi-Fi', 'description' => 'Tagihan PLN & Indihome Juli 2026', 'amount' => 3_250_000, 'category' => 'Operasional', 'recorded_by' => 'H. Rahmat Hidayat', 'status' => 'Approved'],
-            ['ref_number' => 'TRX-2026-087', 'date' => '2026-07-22', 'type' => 'Masuk', 'account_code' => '401.2', 'account_name' => 'Donasi Online & QRIS', 'description' => 'Donasi QRIS Jamaah - Renovasi Kanopi', 'amount' => 5_000_000, 'category' => 'Donasi Pembangunan', 'recorded_by' => 'Admin QRIS', 'status' => 'Approved'],
-            ['ref_number' => 'TRX-2026-086', 'date' => '2026-07-21', 'type' => 'Keluar', 'account_code' => '502.1', 'account_name' => 'Pemeliharaan AC & Sound System', 'description' => 'Service 8 Unit AC Inverter', 'amount' => 1_400_000, 'category' => 'Maintenance', 'recorded_by' => 'Ir. H. Budi Santoso', 'status' => 'Approved'],
-            ['ref_number' => 'TRX-2026-085', 'date' => '2026-07-20', 'type' => 'Masuk', 'account_code' => '402.1', 'account_name' => 'Penerimaan Zakat Mal', 'description' => 'Zakat Mal Bpk H. Hartono Pejaten', 'amount' => 12_500_000, 'category' => 'Zakat', 'recorded_by' => 'H. Rahmat Hidayat', 'status' => 'Approved'],
+            // Agustus 2026 (Minggu III)
+            ['ref_number' => 'INV/20260819/001', 'date' => '2026-08-19', 'type' => 'Masuk', 'account_code' => '401.4', 'account_name' => 'Penerimaan QRIS Nasional', 'description' => 'Infaq QRIS Jamaah', 'amount' => 10_000, 'category' => 'QRIS', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260818/001', 'date' => '2026-08-18', 'type' => 'Masuk', 'account_code' => '401.4', 'account_name' => 'Penerimaan QRIS Nasional', 'description' => 'Infaq QRIS Jamaah', 'amount' => 10_000, 'category' => 'QRIS', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260817/001', 'date' => '2026-08-17', 'type' => 'Masuk', 'account_code' => '401.4', 'account_name' => 'Penerimaan QRIS Nasional', 'description' => 'Infaq QRIS Bpk Abdulloh Jusuf', 'amount' => 250_000, 'category' => 'QRIS', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260816/001', 'date' => '2026-08-16', 'type' => 'Masuk', 'account_code' => '401.2', 'account_name' => 'Kotak Amal Warga RT 008', 'description' => 'Amal Jariah Warga RT 008', 'amount' => 100_000, 'category' => 'Kotak Warga', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260815/001', 'date' => '2026-08-15', 'type' => 'Keluar', 'account_code' => '501.3', 'account_name' => 'Biaya Majelis Ta\'lim & Kajian', 'description' => 'Biaya Majlis Ta\'lim Sabtu Pagi', 'amount' => 400_000, 'category' => 'Dakwah', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260814/002', 'date' => '2026-08-14', 'type' => 'Keluar', 'account_code' => '501.2', 'account_name' => 'Biaya Kebersihan Masjid', 'description' => 'Biaya Kebersihan Mingguan & Marbot', 'amount' => 225_000, 'category' => 'Kebersihan', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260814/001', 'date' => '2026-08-14', 'type' => 'Keluar', 'account_code' => '501.1', 'account_name' => 'Biaya Ibadah Sholat Jumat', 'description' => 'Honor Khotib & Petugas Sholat Jumat', 'amount' => 500_000, 'category' => 'Ibadah Jumat', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260814/001', 'date' => '2026-08-14', 'type' => 'Masuk', 'account_code' => '401.1', 'account_name' => 'Infaq Sholat Jumat', 'description' => 'Infaq Sadakoh Sholat Jumat', 'amount' => 370_500, 'category' => 'Infaq Jumat', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+
+            // Agustus 2026 (Minggu II)
+            ['ref_number' => 'INV/20260811/001', 'date' => '2026-08-11', 'type' => 'Masuk', 'account_code' => '401.4', 'account_name' => 'Penerimaan QRIS Nasional', 'description' => 'Infaq QRIS Jamaah', 'amount' => 10_000, 'category' => 'QRIS', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260809/001', 'date' => '2026-08-09', 'type' => 'Masuk', 'account_code' => '401.2', 'account_name' => 'Kotak Amal Warga RT 008', 'description' => 'Amal Jariah Warga RT 008', 'amount' => 125_000, 'category' => 'Kotak Warga', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260808/001', 'date' => '2026-08-08', 'type' => 'Masuk', 'account_code' => '401.4', 'account_name' => 'Penerimaan QRIS Nasional', 'description' => 'Infaq QRIS Jamaah', 'amount' => 20_000, 'category' => 'QRIS', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260808/001', 'date' => '2026-08-08', 'type' => 'Keluar', 'account_code' => '501.3', 'account_name' => 'Biaya Majelis Ta\'lim & Kajian', 'description' => 'Biaya Majlis Ta\'lim Subuh', 'amount' => 400_000, 'category' => 'Dakwah', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260807/002', 'date' => '2026-08-07', 'type' => 'Keluar', 'account_code' => '501.2', 'account_name' => 'Biaya Kebersihan Masjid', 'description' => 'Biaya Kebersihan Mingguan', 'amount' => 225_000, 'category' => 'Kebersihan', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260807/001', 'date' => '2026-08-07', 'type' => 'Keluar', 'account_code' => '501.1', 'account_name' => 'Biaya Ibadah Sholat Jumat', 'description' => 'Biaya Ibadah Sholat Jumat', 'amount' => 500_000, 'category' => 'Ibadah Jumat', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260807/002', 'date' => '2026-08-07', 'type' => 'Masuk', 'account_code' => '401.4', 'account_name' => 'Penerimaan QRIS Nasional', 'description' => 'Infaq QRIS Jamaah (4 Transaksi)', 'amount' => 135_000, 'category' => 'QRIS', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260807/001', 'date' => '2026-08-07', 'type' => 'Masuk', 'account_code' => '401.1', 'account_name' => 'Infaq Sholat Jumat', 'description' => 'Infaq Sadakoh Sholat Jumat', 'amount' => 629_000, 'category' => 'Infaq Jumat', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+
+            // Agustus 2026 (Minggu I)
+            ['ref_number' => 'INV/20260806/001', 'date' => '2026-08-06', 'type' => 'Masuk', 'account_code' => '401.3', 'account_name' => 'Infaq & Sadakoh Donatur', 'description' => 'Infaq dari Hamba Allah (Bank & Tunai)', 'amount' => 550_000, 'category' => 'Donatur', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260805/001', 'date' => '2026-08-05', 'type' => 'Keluar', 'account_code' => '501.3', 'account_name' => 'Biaya Majelis Ta\'lim & Kajian', 'description' => 'Biaya Ta\'lim Ibu-Ibu', 'amount' => 500_000, 'category' => 'Dakwah', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260805/001', 'date' => '2026-08-05', 'type' => 'Masuk', 'account_code' => '401.3', 'account_name' => 'Infaq & Sadakoh Donatur', 'description' => 'Infaq Bpk Sanusi', 'amount' => 50_000, 'category' => 'Donatur', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260803/001', 'date' => '2026-08-03', 'type' => 'Keluar', 'account_code' => '501.4', 'account_name' => 'Tagihan Listrik PLN', 'description' => 'Bayar Biaya Listrik PLN Masjid', 'amount' => 856_794, 'category' => 'Utilitas', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260802/001', 'date' => '2026-08-02', 'type' => 'Masuk', 'account_code' => '401.2', 'account_name' => 'Kotak Amal Warga RT 008', 'description' => 'Kotak Amal Warga RT 008', 'amount' => 105_000, 'category' => 'Kotak Warga', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260801/001', 'date' => '2026-08-01', 'type' => 'Keluar', 'account_code' => '501.6', 'account_name' => 'Belanja Sarana & Perlengkapan', 'description' => 'Beli Lampu Bohlam Masjid', 'amount' => 169_900, 'category' => 'Sarana', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260801/001', 'date' => '2026-08-01', 'type' => 'Masuk', 'account_code' => '401.3', 'account_name' => 'Infaq & Sadakoh Donatur', 'description' => 'Infaq Bpk Sunardono', 'amount' => 50_000, 'category' => 'Donatur', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260731/003', 'date' => '2026-07-31', 'type' => 'Keluar', 'account_code' => '501.5', 'account_name' => 'Program Sosial & Beras DKM', 'description' => 'Penyaluran Program Sosial DKM', 'amount' => 300_000, 'category' => 'Sosial', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260731/002', 'date' => '2026-07-31', 'type' => 'Keluar', 'account_code' => '501.2', 'account_name' => 'Biaya Kebersihan Masjid', 'description' => 'Beli Obat Pembersih Lantai & Biaya Kebersihan', 'amount' => 300_000, 'category' => 'Kebersihan', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260731/001', 'date' => '2026-07-31', 'type' => 'Keluar', 'account_code' => '501.1', 'account_name' => 'Biaya Ibadah Sholat Jumat', 'description' => 'Biaya Ibadah Sholat Jumat', 'amount' => 500_000, 'category' => 'Ibadah Jumat', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260731/003', 'date' => '2026-07-31', 'type' => 'Masuk', 'account_code' => '401.3', 'account_name' => 'Infaq & Sadakoh Donatur', 'description' => 'Infaq Sadakoh Hamba Allah', 'amount' => 300_000, 'category' => 'Donatur', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260731/002', 'date' => '2026-07-31', 'type' => 'Masuk', 'account_code' => '401.3', 'account_name' => 'Infaq & Sadakoh Donatur', 'description' => 'Kotak Amal Masjid Utama', 'amount' => 1_212_000, 'category' => 'Kotak Masjid', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260731/001', 'date' => '2026-07-31', 'type' => 'Masuk', 'account_code' => '401.1', 'account_name' => 'Infaq Sholat Jumat', 'description' => 'Kotak Amal Sholat Jumat', 'amount' => 714_000, 'category' => 'Infaq Jumat', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+
+            // Juli 2026
+            ['ref_number' => 'EXP/20260728/001', 'date' => '2026-07-28', 'type' => 'Keluar', 'account_code' => '501.4', 'account_name' => 'Tagihan Listrik PLN', 'description' => 'Tagihan Listrik PLN Masjid Periode Juli 2026', 'amount' => 711_181, 'category' => 'Utilitas', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260727/001', 'date' => '2026-07-27', 'type' => 'Keluar', 'account_code' => '501.5', 'account_name' => 'Program Sosial & Beras DKM', 'description' => 'Beli Beras Program Sosial DKM untuk Warga', 'amount' => 1_400_000, 'category' => 'Sosial', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260727/001', 'date' => '2026-07-27', 'type' => 'Masuk', 'account_code' => '401.3', 'account_name' => 'Infaq & Sadakoh Donatur', 'description' => 'Hamba Allah - Donasi Khusus Program Beras', 'amount' => 1_400_000, 'category' => 'Sosial', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260726/001', 'date' => '2026-07-26', 'type' => 'Masuk', 'account_code' => '401.2', 'account_name' => 'Kotak Amal Warga RT 008', 'description' => 'Kotak Amal Warga RT 008', 'amount' => 145_000, 'category' => 'Kotak Warga', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260725/001', 'date' => '2026-07-25', 'type' => 'Keluar', 'account_code' => '501.3', 'account_name' => 'Biaya Majelis Ta\'lim & Kajian', 'description' => 'Biaya Majlis Ta\'lim Pekanan', 'amount' => 400_000, 'category' => 'Dakwah', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260724/001', 'date' => '2026-07-24', 'type' => 'Masuk', 'account_code' => '401.1', 'account_name' => 'Infaq Sholat Jumat', 'description' => 'Kotak Amal Sholat Jumat Pekan IV Juli', 'amount' => 702_000, 'category' => 'Infaq Jumat', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260724/001', 'date' => '2026-07-24', 'type' => 'Keluar', 'account_code' => '501.1', 'account_name' => 'Biaya Ibadah Sholat Jumat', 'description' => 'Biaya Ibadah Sholat Jumat', 'amount' => 500_000, 'category' => 'Ibadah Jumat', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+
+            // Juni 2026
+            ['ref_number' => 'EXP/20260629/001', 'date' => '2026-06-29', 'type' => 'Keluar', 'account_code' => '501.6', 'account_name' => 'Belanja Sarana & Perlengkapan', 'description' => 'Belanja Kebutuhan Operasional Masjid', 'amount' => 252_000, 'category' => 'Sarana', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260628/001', 'date' => '2026-06-28', 'type' => 'Keluar', 'account_code' => '501.4', 'account_name' => 'Tagihan Listrik PLN', 'description' => 'Tagihan Listrik PLN Periode Juni 2026', 'amount' => 605_197, 'category' => 'Utilitas', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260627/001', 'date' => '2026-06-27', 'type' => 'Keluar', 'account_code' => '501.3', 'account_name' => 'Biaya Majelis Ta\'lim & Kajian', 'description' => 'Biaya Majelis Ta\'lim Bulanan', 'amount' => 1_600_000, 'category' => 'Dakwah', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260626/001', 'date' => '2026-06-26', 'type' => 'Keluar', 'account_code' => '501.2', 'account_name' => 'Biaya Kebersihan Masjid', 'description' => 'Biaya Kebersihan Masjid Bulan Juni', 'amount' => 1_445_000, 'category' => 'Kebersihan', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'EXP/20260625/001', 'date' => '2026-06-25', 'type' => 'Keluar', 'account_code' => '501.1', 'account_name' => 'Biaya Ibadah Sholat Jumat', 'description' => 'Biaya Sholat Jumat 4 Pekan Juni', 'amount' => 2_100_000, 'category' => 'Ibadah Jumat', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260620/001', 'date' => '2026-06-20', 'type' => 'Masuk', 'account_code' => '401.2', 'account_name' => 'Kotak Amal Warga RT 008', 'description' => 'Kotak Amal dari Warga RT 008', 'amount' => 662_000, 'category' => 'Kotak Warga', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260615/001', 'date' => '2026-06-15', 'type' => 'Masuk', 'account_code' => '401.3', 'account_name' => 'Infaq & Sadakoh Donatur', 'description' => 'Infaq Sadakoh Donatur & Jamaah', 'amount' => 880_000, 'category' => 'Donatur', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260610/001', 'date' => '2026-06-10', 'type' => 'Masuk', 'account_code' => '401.3', 'account_name' => 'Infaq & Sadakoh Donatur', 'description' => 'Kotak Amal Masjid Utama', 'amount' => 1_995_000, 'category' => 'Kotak Masjid', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
+            ['ref_number' => 'INV/20260605/001', 'date' => '2026-06-05', 'type' => 'Masuk', 'account_code' => '401.1', 'account_name' => 'Infaq Sholat Jumat', 'description' => 'Kotak Amal Sholat Jumat Bulan Juni', 'amount' => 3_008_500, 'category' => 'Infaq Jumat', 'recorded_by' => 'T. Handoko', 'status' => 'Approved'],
         ] as $tx) {
             FinancialTransaction::create($tx);
         }
@@ -92,9 +142,9 @@ class DataSeeder extends Seeder
         CMSArticle::create(['title' => 'Laporan Progres Renovasi Kanopi Selasar Masjid', 'category' => 'Pengumuman', 'author' => 'Sekretariat DKM', 'date' => '2026-07-20', 'summary' => 'Progres pengerjaan kanopi selasar telah mencapai 75%.', 'content' => 'Alhamdulillah, pengerjaan rangka baja ringan dan atap kanopi berjalan lancar...', 'views' => 615, 'is_published' => true]);
 
         // Audit Logs
-        AuditLog::create(['timestamp' => '2026-07-24 09:15:22', 'user_name' => 'H. Rahmat Hidayat', 'user_role' => 'Bendahara', 'action' => 'CREATE_TRANSACTION', 'module' => 'Keuangan', 'details' => 'Menambahkan transaksi Kas Masuk Rp 8.450.000 (Infaq Jumat)', 'ip_address' => '180.252.110.45']);
-        AuditLog::create(['timestamp' => '2026-07-24 08:30:10', 'user_name' => 'H. M. Zamzami', 'user_role' => 'Ketua DKM', 'action' => 'APPROVE_BUDGET', 'module' => 'Approval', 'details' => 'Menyetujui pengajuan 2 unit Microphone Wireless Shure', 'ip_address' => '180.252.110.12']);
-        AuditLog::create(['timestamp' => '2026-07-23 16:45:00', 'user_name' => 'Ustadz Abdullah', 'user_role' => 'Sekretaris', 'action' => 'UPDATE_AGENDA', 'module' => 'Website CMS', 'details' => 'Memperbarui poster & jadwal Kajian Subuh KH. Ahmad Fauzi', 'ip_address' => '180.252.112.89']);
+        AuditLog::create(['timestamp' => '2026-08-19 10:15:22', 'user_name' => 'T. Handoko', 'user_role' => 'Bendahara', 'action' => 'CREATE_TRANSACTION', 'module' => 'Keuangan', 'details' => 'Menambahkan transaksi Kas Masuk Rp 250.000 (QRIS Bpk Abdulloh Jusuf)', 'ip_address' => '180.252.110.45']);
+        AuditLog::create(['timestamp' => '2026-08-18 08:30:10', 'user_name' => 'H. Hamdani', 'user_role' => 'Ketua DKM', 'action' => 'APPROVE_BUDGET', 'module' => 'Approval', 'details' => 'Menyetujui realisasi pengeluaran kas ibadah sholat Jumat', 'ip_address' => '180.252.110.12']);
+        AuditLog::create(['timestamp' => '2026-08-15 16:45:00', 'user_name' => 'Ustadz Abdullah', 'user_role' => 'Sekretaris', 'action' => 'UPDATE_AGENDA', 'module' => 'Website CMS', 'details' => 'Memperbarui poster & jadwal Kajian Subuh KH. Ahmad Fauzi', 'ip_address' => '180.252.112.89']);
 
         echo "\n  ✅ DataSeeder: ".FinancialTransaction::count().' transactions, '
             .DonationCampaign::count().' campaigns, '

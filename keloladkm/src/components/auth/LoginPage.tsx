@@ -50,8 +50,8 @@ export const LoginPage: React.FC = () => {
 
   const demoAccounts: { role: UserRole; name: string; email: string; desc: string }[] = [
     { role: 'super_admin', name: 'Super Admin', email: 'admin@masjidnuruliman.or.id', desc: 'Akses Penuh System' },
-    { role: 'ketua_dkm', name: 'H. M. Zamzami', email: 'ketua@masjidnuruliman.or.id', desc: 'Ketua DKM & Approval' },
-    { role: 'bendahara', name: 'H. Rahmat Hidayat', email: 'bendahara@masjidnuruliman.or.id', desc: 'Kas & Buku Besar' },
+    { role: 'ketua_dkm', name: 'H. Hamdani', email: 'ketua@masjidnuruliman.or.id', desc: 'Ketua DKM & Approval' },
+    { role: 'bendahara', name: 'T. Handoko', email: 'bendahara@masjidnuruliman.or.id', desc: 'Kas & Buku Besar' },
     { role: 'sekretaris', name: 'H. Fikri Ramadhan', email: 'sekretaris@masjidnuruliman.or.id', desc: 'Surat, Arsip & Agenda' },
     { role: 'admin_inventaris', name: 'Dedi Kurniawan', email: 'inventaris@masjidnuruliman.or.id', desc: 'Aset & Sarpras' },
     { role: 'viewer', name: 'Auditor Eksternal', email: 'auditor@masjidnuruliman.or.id', desc: 'Overview & Laporan' },

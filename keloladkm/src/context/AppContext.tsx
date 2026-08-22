@@ -259,6 +259,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     })();
   }, [isAuthenticated]);
+
+  // ── Automatic Background Sync when network reconnects ──
+  useEffect(() => {
+    const handleOnline = async () => {
+      try {
+        const result = await flushPendingMutations();
+        if (result && result.syncedCount > 0) {
+          showToast(`Koneksi pulih: ${result.syncedCount} perubahan offline berhasil disinkronkan ke server.`, 'success');
+        }
+      } catch {
+        // ignore
+      }
+    };
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  }, []);
   
   const [runningText, setRunningText] = useState<string>(
     '🕌 Selamat Datang di Masjid Jami Nurul Iman Pejaten Timur • Infaq Jumat Pekan Ini: Rp 8.450.000 • Kajian Subuh Sabtu Bersama KH. Ahmad Fauzi • Donasi QRIS Tersedia 24 Jam'
@@ -344,7 +360,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newLog: AuditLog = {
       id: 'LOG-' + Math.floor(1000 + Math.random() * 9000),
       timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-      userName: currentRole === 'ketua_dkm' ? 'H. M. Zamzami' : 'Pengurus DKM',
+      userName: currentRole === 'ketua_dkm' ? 'H. Hamdani' : currentRole === 'bendahara' ? 'T. Handoko' : 'Pengurus DKM',
       userRole: currentRole.toUpperCase(),
       action,
       module,
