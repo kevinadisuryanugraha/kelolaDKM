@@ -387,9 +387,9 @@ export const LoginPage: React.FC = () => {
                 <Wallet className="w-3.5 h-3.5 text-emerald-600" />
               </div>
               <div className="font-mono font-bold text-lg text-slate-900 dark:text-white">
-                Rp 248.500.000
+                Rp 9.108.454
               </div>
-              <div className="text-[10px] text-emerald-600 font-bold">↑ +14.2% Bulan Ini</div>
+              <div className="text-[10px] text-emerald-600 font-bold">Kas Terkini Aktual</div>
             </motion.div>
 
             <motion.div

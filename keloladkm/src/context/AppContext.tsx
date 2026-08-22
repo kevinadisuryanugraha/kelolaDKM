@@ -137,6 +137,20 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // ── Storage Version Migration (Ensures fresh real mosque data across all visitor browsers) ──
+  const DKM_DATA_VERSION = 'v2026_08_real_data_v2';
+  try {
+    const currentVersion = localStorage.getItem('dkm_data_version');
+    if (currentVersion !== DKM_DATA_VERSION) {
+      localStorage.removeItem('dkm_transactions');
+      localStorage.removeItem('dkm_accounts');
+      localStorage.removeItem('dkm_budgets');
+      localStorage.setItem('dkm_data_version', DKM_DATA_VERSION);
+    }
+  } catch {
+    /* ignore */
+  }
+
   // ── localStorage helpers ──
   const loadFromStorage = <T,>(key: string, fallback: T): T => {
     try { const raw = localStorage.getItem(`dkm_${key}`); return raw ? JSON.parse(raw) : fallback; }
@@ -277,7 +291,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, []);
   
   const [runningText, setRunningText] = useState<string>(
-    '🕌 Selamat Datang di Masjid Jami Nurul Iman Pejaten Timur • Infaq Jumat Pekan Ini: Rp 8.450.000 • Kajian Subuh Sabtu Bersama KH. Ahmad Fauzi • Donasi QRIS Tersedia 24 Jam'
+    '🕌 Selamat Datang di Masjid Jami Nurul Iman Pejaten Timur • Total Saldo Kas Tersimpan: Rp 9.108.454 • Kajian Subuh & Majelis Ta\'lim Rutin • Donasi QRIS & Rekening BSI Siap 24 Jam'
   );
 
   const [notifications, setNotifications] = useState<DashboardNotification[]>(() =>
