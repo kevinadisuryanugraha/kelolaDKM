@@ -22,9 +22,8 @@ export const MASJID_INFO = {
   qrisMerchantName: 'MASJID JAMI NURUL IMAN PEJATEN',
   qrisNMID: 'ID1023948571203',
   bankAccounts: [
-    { bank: 'Bank Syariah Indonesia (BSI)', accountNumber: '711-2233-445', accountName: 'DKM Masjid Jami Nurul Iman - Kas' },
-    { bank: 'Bank Syariah Indonesia (BSI)', accountNumber: '788-9900-112', accountName: 'DKM Masjid Jami Nurul Iman - Zakat/Infaq' },
-    { bank: 'Bank Mandiri Syariah', accountNumber: '127-000-889912-3', accountName: 'DKM Nurul Iman - Pembangunan' }
+    { bank: 'Bank Syariah Indonesia (BSI)', accountNumber: '711-2233-445', accountName: 'DKM Masjid Jami Nurul Iman - Kas Operasional & Infaq' },
+    { bank: 'Bank Syariah Indonesia (BSI)', accountNumber: '788-9900-112', accountName: 'DKM Masjid Jami Nurul Iman - ZISWAF' }
   ],
   stats: {
     totalKas: 9108454,

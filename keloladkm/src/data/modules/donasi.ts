@@ -2,36 +2,114 @@ import { DonationCampaign, DonorRecord } from '../../types';
 
 export const DONATION_CAMPAIGNS: DonationCampaign[] = [
   {
-    id: 'CMP-01', title: 'Pengadaan & Renovasi Kanopi Selasar Barat Masjid Jami Nurul Iman',
-    category: 'Renovasi', targetAmount: 85000000, collectedAmount: 62400000, donorCount: 142,
-    deadline: '2026-08-31',
-    description: 'Renovasi kanopi selasar seluas 120m² untuk kenyamanan jamaah saat jamaah melimpah pada Sholat Jumat & Kajian Akbar.',
-    imageUrl: '', isUrgent: true
+    id: 'CMP-01',
+    title: 'Program Pengadaan Beras & Bantuan Sosial Jamaah DKM',
+    category: 'Social/Yatim',
+    targetAmount: 12000000,
+    collectedAmount: 1700000,
+    donorCount: 24,
+    deadline: '2026-12-31',
+    description: 'Penyaluran beras dan bantuan sosial DKM bagi warga dan keluarga mustahik di lingkungan sekitar Masjid Jami Nurul Iman.',
+    imageUrl: '',
+    isUrgent: true
   },
   {
-    id: 'CMP-02', title: 'Santunan 100 Anak Yatim & Dhuafa Pejaten Timur',
-    category: 'Social/Yatim', targetAmount: 50000000, collectedAmount: 38200000, donorCount: 98,
-    deadline: '2026-08-15',
-    description: 'Program santunan bulanan berupa uang saku sekolah, perlengkapan belajar, dan paket sembako keluarga dhuafa.',
+    id: 'CMP-02',
+    title: 'Infaq Pemeliharaan Sarana, Kelistrikan & Kebersihan Masjid',
+    category: 'Renovasi',
+    targetAmount: 10000000,
+    collectedAmount: 1919900,
+    donorCount: 48,
+    deadline: '2026-12-31',
+    description: 'Dukungan pemeliharaan berkala lampu penerangan, sanitasi, obat pembersih, dan kebersihan ruang utama ibadah.',
     imageUrl: ''
   },
   {
-    id: 'CMP-03', title: 'Bantuan Operasional Ibadah & Syiar Ramadhan',
-    category: 'Operasional', targetAmount: 30000000, collectedAmount: 21500000, donorCount: 64,
-    deadline: '2026-09-30',
-    description: 'Dukungan operasional ibadah Ramadhan, takjil gratis & syiar dakwah untuk jamaah Pejaten Timur.',
+    id: 'CMP-03',
+    title: 'Infaq Dakwah, Majelis Ta\'lim & Pembinaan Jamaah',
+    category: 'Operasional',
+    targetAmount: 15000000,
+    collectedAmount: 5300000,
+    donorCount: 86,
+    deadline: '2026-12-31',
+    description: 'Operasional kegiatan majelis ta\'lim pekanan, kajian ta\'lim ibu-ibu, dan syiar dakwah Masjid Jami Nurul Iman.',
     imageUrl: ''
   }
 ];
 
 export const DONOR_RECORDS: DonorRecord[] = [
-  { id: 'DNR-101', donorName: 'H. Bambang Sugipto', phone: '0812-3344-5566', email: 'bambang@gmail.com',
-    campaignId: 'CMP-01', campaignTitle: 'Renovasi Kanopi Selasar Barat', amount: 2500000,
-    method: 'Transfer BSI', date: '2026-07-23', status: 'Diterima' },
-  { id: 'DNR-102', donorName: 'Hamba Allah', phone: '0815-9900-1122',
-    campaignId: 'CMP-02', campaignTitle: 'Santunan 100 Anak Yatim', amount: 500000,
-    method: 'QRIS', date: '2026-07-23', status: 'Diterima', isAnonymous: true },
-  { id: 'DNR-103', donorName: 'Hj. Ratna Sari', phone: '0811-2233-4455', email: 'ratna.sari@yahoo.com',
-    campaignId: 'CMP-01', campaignTitle: 'Renovasi Kanopi Selasar Barat', amount: 1000000,
-    method: 'QRIS', date: '2026-07-22', status: 'Diterima' }
+  {
+    id: 'DNR-101',
+    donorName: 'Hamba Allah',
+    phone: '0812-9900-1122',
+    email: '',
+    campaignId: 'CMP-01',
+    campaignTitle: 'Program Pengadaan Beras & Bantuan Sosial Jamaah DKM',
+    amount: 1400000,
+    method: 'Transfer BSI',
+    date: '2026-07-27',
+    status: 'Diterima',
+    isAnonymous: true
+  },
+  {
+    id: 'DNR-102',
+    donorName: 'Bpk Abdulloh Jusuf',
+    phone: '0813-8877-6655',
+    email: '',
+    campaignId: 'CMP-03',
+    campaignTitle: 'Infaq Dakwah, Majelis Ta\'lim & Pembinaan Jamaah',
+    amount: 250000,
+    method: 'QRIS',
+    date: '2026-08-17',
+    status: 'Diterima'
+  },
+  {
+    id: 'DNR-103',
+    donorName: 'Ibu Kusdarwati',
+    phone: '0815-4433-2211',
+    email: '',
+    campaignId: 'CMP-02',
+    campaignTitle: 'Infaq Pemeliharaan Sarana, Kelistrikan & Kebersihan Masjid',
+    amount: 250000,
+    method: 'Transfer BSI',
+    date: '2026-07-11',
+    status: 'Diterima'
+  },
+  {
+    id: 'DNR-104',
+    donorName: 'Hamba Allah',
+    phone: '0811-2233-4455',
+    email: '',
+    campaignId: 'CMP-02',
+    campaignTitle: 'Infaq Pemeliharaan Sarana, Kelistrikan & Kebersihan Masjid',
+    amount: 550000,
+    method: 'Transfer BSI',
+    date: '2026-08-06',
+    status: 'Diterima',
+    isAnonymous: true
+  },
+  {
+    id: 'DNR-105',
+    donorName: 'Bpk Sunardono',
+    phone: '0816-7788-9900',
+    email: '',
+    campaignId: 'CMP-02',
+    campaignTitle: 'Infaq Pemeliharaan Sarana, Kelistrikan & Kebersihan Masjid',
+    amount: 50000,
+    method: 'Transfer BSI',
+    date: '2026-08-01',
+    status: 'Diterima'
+  },
+  {
+    id: 'DNR-106',
+    donorName: 'Bpk Sanusi',
+    phone: '0817-6655-4433',
+    email: '',
+    campaignId: 'CMP-02',
+    campaignTitle: 'Infaq Pemeliharaan Sarana, Kelistrikan & Kebersihan Masjid',
+    amount: 50000,
+    method: 'Cash / Tunai',
+    date: '2026-08-05',
+    status: 'Diterima'
+  }
 ];

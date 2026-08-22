@@ -56,30 +56,20 @@ export const KeuanganModule: React.FC = () => {
       id: 'REC-01',
       bankName: 'Bank Syariah Indonesia (BSI)',
       accountNumber: '711-2233-445',
-      accountName: 'Kas Operasional DKM',
-      ledgerBalance: 142800000,
-      bankBalance: 142800000,
-      lastSynced: '2026-07-26 18:30',
+      accountName: 'Kas Bank & QRIS Operasional DKM',
+      ledgerBalance: 8990000,
+      bankBalance: 8990000,
+      lastSynced: '2026-08-20 18:30',
       status: 'Matched'
     },
     {
       id: 'REC-02',
-      bankName: 'Bank Syariah Indonesia (BSI)',
-      accountNumber: '788-9900-112',
-      accountName: 'Rekening ZISWAF DKM',
-      ledgerBalance: 52000000,
-      bankBalance: 52000000,
-      lastSynced: '2026-07-26 18:30',
-      status: 'Matched'
-    },
-    {
-      id: 'REC-03',
-      bankName: 'Bank Mandiri Syariah',
-      accountNumber: '127-000-889912-3',
-      accountName: 'Kas Pembangunan Masjid',
-      ledgerBalance: 28000000,
-      bankBalance: 28000000,
-      lastSynced: '2026-07-26 18:30',
+      bankName: 'Brankas Tunai Masjid',
+      accountNumber: 'KAS-FISIK-01',
+      accountName: 'Kas Tunai (Brankas DKM)',
+      ledgerBalance: 118454,
+      bankBalance: 118454,
+      lastSynced: '2026-08-20 18:30',
       status: 'Matched'
     }
   ]);
@@ -116,14 +106,18 @@ export const KeuanganModule: React.FC = () => {
   // ────────── Generate Double-Entry Journal Rows ──────────
   const journalRows: JournalRow[] = [];
   transactions.forEach((tx) => {
+    const isBankOrQris = tx.accountCode.startsWith('401.4') || tx.accountCode === '102.1' || tx.description.toLowerCase().includes('qris') || tx.description.toLowerCase().includes('bank') || tx.description.toLowerCase().includes('transfer');
+    const cashAccountCode = isBankOrQris ? '102.1' : '101.1';
+    const cashAccountName = isBankOrQris ? 'Bank BSI & QRIS Operasional' : 'Kas Tunai (Brankas DKM)';
+
     if (tx.type === 'Masuk') {
-      // Debit: Kas (101.1), Credit: Income Account (tx.accountCode)
+      // Debit: Kas / Bank, Credit: Income Account (tx.accountCode)
       journalRows.push({
         id: `${tx.id}-D`,
         refNumber: tx.refNumber || tx.id,
         date: tx.date,
-        accountCode: '101.1',
-        accountName: 'Kas Tunai Utama Masjid',
+        accountCode: cashAccountCode,
+        accountName: cashAccountName,
         description: tx.description,
         debit: tx.amount,
         credit: 0
@@ -139,7 +133,7 @@ export const KeuanganModule: React.FC = () => {
         credit: tx.amount
       });
     } else {
-      // Debit: Expense Account (tx.accountCode), Credit: Kas (101.1)
+      // Debit: Expense Account (tx.accountCode), Credit: Kas / Bank
       journalRows.push({
         id: `${tx.id}-D`,
         refNumber: tx.refNumber || tx.id,
@@ -154,8 +148,8 @@ export const KeuanganModule: React.FC = () => {
         id: `${tx.id}-C`,
         refNumber: tx.refNumber || tx.id,
         date: tx.date,
-        accountCode: '101.1',
-        accountName: 'Kas Tunai Utama Masjid',
+        accountCode: cashAccountCode,
+        accountName: cashAccountName,
         description: tx.description,
         debit: 0,
         credit: tx.amount

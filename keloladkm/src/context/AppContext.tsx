@@ -138,13 +138,16 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // ── Storage Version Migration (Ensures fresh real mosque data across all visitor browsers) ──
-  const DKM_DATA_VERSION = 'v2026_08_real_data_v2';
+  const DKM_DATA_VERSION = 'v2026_08_real_data_v3_clean';
   try {
     const currentVersion = localStorage.getItem('dkm_data_version');
     if (currentVersion !== DKM_DATA_VERSION) {
       localStorage.removeItem('dkm_transactions');
       localStorage.removeItem('dkm_accounts');
       localStorage.removeItem('dkm_budgets');
+      localStorage.removeItem('dkm_campaigns');
+      localStorage.removeItem('dkm_donorRecords');
+      localStorage.removeItem('dkm_notifications');
       localStorage.setItem('dkm_data_version', DKM_DATA_VERSION);
     }
   } catch {

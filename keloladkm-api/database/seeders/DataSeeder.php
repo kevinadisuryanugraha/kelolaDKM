@@ -97,25 +97,29 @@ class DataSeeder extends Seeder
             FinancialTransaction::create($tx);
         }
 
-        // Budget
+        // Budget Riil
         foreach ([
-            ['category' => 'Operasional Listrik, Air & Kebersihan', 'allocated_amount' => 45_000_000, 'used_amount' => 26_500_000, 'period' => 'Tahun 2026'],
-            ['category' => 'Honorarium Imam, Muadzin & Marbot', 'allocated_amount' => 96_000_000, 'used_amount' => 56_000_000, 'period' => 'Tahun 2026'],
-            ['category' => 'Program Dakwah, Kajian & Tabligh Akbar', 'allocated_amount' => 35_000_000, 'used_amount' => 18_200_000, 'period' => 'Tahun 2026'],
-            ['category' => 'Renovasi Kanopi & Sound System Utama', 'allocated_amount' => 120_000_000, 'used_amount' => 85_000_000, 'period' => 'Tahun 2026'],
+            ['category' => 'Operasional Listrik PLN & Kebersihan', 'allocated_amount' => 15_000_000, 'used_amount' => 5_693_172, 'period' => 'Tahun 2026'],
+            ['category' => 'Biaya Ibadah Sholat Jumat & Khotib', 'allocated_amount' => 25_000_000, 'used_amount' => 6_600_000, 'period' => 'Tahun 2026'],
+            ['category' => 'Majelis Ta\'lim & Pembinaan Ummat', 'allocated_amount' => 20_000_000, 'used_amount' => 5_300_000, 'period' => 'Tahun 2026'],
+            ['category' => 'Program Sosial Santunan & Beras DKM', 'allocated_amount' => 12_000_000, 'used_amount' => 1_700_000, 'period' => 'Tahun 2026'],
+            ['category' => 'Pemeliharaan Sarana & Perlengkapan', 'allocated_amount' => 10_000_000, 'used_amount' => 1_919_900, 'period' => 'Tahun 2026'],
         ] as $b) {
             BudgetPlan::create($b);
         }
 
-        // Campaigns
-        DonationCampaign::create(['title' => 'Pengadaan & Renovasi Kanopi Selasar Barat', 'category' => 'Renovasi', 'target_amount' => 85_000_000, 'collected_amount' => 62_400_000, 'donor_count' => 142, 'deadline' => '2026-08-31', 'description' => 'Renovasi kanopi selasar seluas 120m²', 'is_urgent' => true]);
-        DonationCampaign::create(['title' => 'Santunan 100 Anak Yatim & Dhuafa Pejaten Timur', 'category' => 'Social/Yatim', 'target_amount' => 50_000_000, 'collected_amount' => 38_200_000, 'donor_count' => 98, 'deadline' => '2026-08-15', 'description' => 'Program santunan bulanan berupa uang saku sekolah dan paket sembako']);
-        DonationCampaign::create(['title' => 'Bantuan Operasional Ibadah & Syiar Ramadhan', 'category' => 'Operasional', 'target_amount' => 30_000_000, 'collected_amount' => 21_500_000, 'donor_count' => 64, 'deadline' => '2026-09-30', 'description' => 'Dukungan operasional ibadah Ramadhan, takjil gratis & syiar dakwah']);
+        // Campaigns Riil
+        DonationCampaign::create(['title' => 'Program Pengadaan Beras & Bantuan Sosial Jamaah DKM', 'category' => 'Sosial', 'target_amount' => 12_000_000, 'collected_amount' => 1_700_000, 'donor_count' => 24, 'deadline' => '2026-12-31', 'description' => 'Penyaluran beras dan bantuan sosial DKM bagi warga mustahik di lingkungan sekitar Masjid Jami Nurul Iman.', 'is_urgent' => true]);
+        DonationCampaign::create(['title' => 'Infaq Pemeliharaan Sarana, Kelistrikan & Kebersihan Masjid', 'category' => 'Sarpras', 'target_amount' => 10_000_000, 'collected_amount' => 1_919_900, 'donor_count' => 48, 'deadline' => '2026-12-31', 'description' => 'Dukungan pemeliharaan berkala lampu penerangan, sanitasi, obat pembersih, dan kebersihan ruang ibadah.']);
+        DonationCampaign::create(['title' => 'Infaq Dakwah, Majelis Ta\'lim & Pembinaan Jamaah', 'category' => 'Dakwah', 'target_amount' => 15_000_000, 'collected_amount' => 5_300_000, 'donor_count' => 86, 'deadline' => '2026-12-31', 'description' => 'Operasional kegiatan majelis ta\'lim pekanan, kajian ta\'lim ibu-ibu, dan syiar dakwah Masjid Jami Nurul Iman.']);
 
-        // Donors
-        DonorRecord::create(['donor_name' => 'H. Bambang Sugipto', 'phone' => '081233445566', 'email' => 'bambang@gmail.com', 'donation_campaign_id' => 1, 'amount' => 2_500_000, 'method' => 'Transfer BSI', 'date' => '2026-07-23', 'status' => 'Diterima']);
-        DonorRecord::create(['donor_name' => 'Hamba Allah', 'phone' => '081599001122', 'donation_campaign_id' => 2, 'amount' => 500_000, 'method' => 'QRIS', 'date' => '2026-07-23', 'status' => 'Diterima', 'is_anonymous' => true]);
-        DonorRecord::create(['donor_name' => 'Hj. Ratna Sari', 'phone' => '081122334455', 'email' => 'ratna.sari@yahoo.com', 'donation_campaign_id' => 1, 'amount' => 1_000_000, 'method' => 'QRIS', 'date' => '2026-07-22', 'status' => 'Diterima']);
+        // Donors Riil
+        DonorRecord::create(['donor_name' => 'Hamba Allah', 'phone' => '081299001122', 'email' => '', 'donation_campaign_id' => 1, 'amount' => 1_400_000, 'method' => 'Transfer BSI', 'date' => '2026-07-27', 'status' => 'Diterima', 'is_anonymous' => true]);
+        DonorRecord::create(['donor_name' => 'Bpk Abdulloh Jusuf', 'phone' => '081388776655', 'email' => '', 'donation_campaign_id' => 3, 'amount' => 250_000, 'method' => 'QRIS', 'date' => '2026-08-17', 'status' => 'Diterima']);
+        DonorRecord::create(['donor_name' => 'Ibu Kusdarwati', 'phone' => '081544332211', 'email' => '', 'donation_campaign_id' => 2, 'amount' => 250_000, 'method' => 'Transfer BSI', 'date' => '2026-07-11', 'status' => 'Diterima']);
+        DonorRecord::create(['donor_name' => 'Hamba Allah', 'phone' => '081122334455', 'email' => '', 'donation_campaign_id' => 2, 'amount' => 550_000, 'method' => 'Transfer BSI', 'date' => '2026-08-06', 'status' => 'Diterima', 'is_anonymous' => true]);
+        DonorRecord::create(['donor_name' => 'Bpk Sunardono', 'phone' => '081677889900', 'email' => '', 'donation_campaign_id' => 2, 'amount' => 50_000, 'method' => 'Transfer BSI', 'date' => '2026-08-01', 'status' => 'Diterima']);
+        DonorRecord::create(['donor_name' => 'Bpk Sanusi', 'phone' => '081766554433', 'email' => '', 'donation_campaign_id' => 2, 'amount' => 50_000, 'method' => 'Tunai', 'date' => '2026-08-05', 'status' => 'Diterima']);
 
         // Qurban
         QurbanParticipant::create(['participant_name' => 'Kelompok H. Zamzami (1/7 Sapi Limosin A)', 'animal_type' => 'Sapi', 'group_name' => 'Sapi Limosin A - 380 Kg', 'phone' => '081299881122', 'amount' => 3_800_000, 'payment_status' => 'Lunas', 'coupon_code' => 'KPN-SP01-01']);
